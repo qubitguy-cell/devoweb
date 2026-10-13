@@ -17,10 +17,10 @@ Daily content is stored in `assets/database.json`. Reading progress, prayer note
 
 ## Features
 
-- Light and dark mode with a collapsible top-right menu
+- Wallpaper mode with a blurred, readability-shaded background, dark mode, and white mode
 - Daily devotionals and verse-based reading flow
 - Prayer room with breathing cue and saved prayer entries
-- Optional Gemini AI companion with a server-side API key
+- Gemini AI companion with a server-side API key
 - Supabase login flow with email authentication
 - Community chat for signed-in members
 - Journal library for public PDF viewing and authenticated uploads
@@ -41,7 +41,7 @@ This project is designed for static hosting, but some features require HTTP acce
 3. Optionally set `GEMINI_MODEL`; the default is `gemini-2.5-flash`.
 4. Redeploy after changing environment variables.
 
-The browser calls `/api/gemini`, so the API key stays server-side.
+The browser calls `/api/gemini`, so the API key stays server-side. The companion requires this route and does not substitute scripted replies if the key or Gemini service is unavailable.
 
 ## Supabase setup
 

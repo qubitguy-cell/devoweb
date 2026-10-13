@@ -217,40 +217,28 @@ function appendMessage(role, text, suggestedVerse = '') {
   messages.scrollTop = messages.scrollHeight;
 }
 
-function matchResponse(message, responses) {
-  const normalized = message.toLowerCase().replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim();
-  return responses.find((item) => item.keywords.some((keyword) => {
-    if (keyword.includes(' ')) return normalized.includes(keyword);
-    return new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(normalized);
-  }));
-}
-
-async function getCompanionReply(message, responses) {
-  try {
-    const result = await fetch(AI_API_CONFIG.endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history: companionHistory })
-    });
-    if (!result.ok) throw new Error('Companion service unavailable');
-    const data = await result.json();
-    const reply = { response_text: data.response_text, suggested_verses: data.suggested_verses || [] };
-    companionHistory = [
-      ...companionHistory,
-      { role: 'user', text: message },
-      { role: 'model', text: reply.response_text }
-    ].slice(-8);
-    return reply;
-  } catch {
-    const fallback = matchResponse(message, responses) || {
-      response_text: 'The live companion is unavailable right now. Thank you for sharing that with me. What feels most important about it right now?',
-      suggested_verses: []
-    };
-    return fallback;
+async function getCompanionReply(message) {
+  const result = await fetch(AI_API_CONFIG.endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, history: companionHistory })
+  });
+  const data = await result.json().catch(() => ({}));
+  if (!result.ok) throw new Error(data.error || 'Gemini is unavailable. Check the Vercel GEMINI_API_KEY setting.');
+  if (typeof data.response_text !== 'string' || !data.response_text.trim()) {
+    throw new Error('Gemini returned an empty reply. Please try again.');
   }
+
+  const reply = { response_text: data.response_text, suggested_verses: data.suggested_verses || [] };
+  companionHistory = [
+    ...companionHistory,
+    { role: 'user', text: message },
+    { role: 'model', text: reply.response_text }
+  ].slice(-8);
+  return reply;
 }
 
-function setupChat(responses) {
+function setupChat() {
   const form = byId('chat-form');
   if (!form) return;
   const input = byId('chat-input');
@@ -265,10 +253,10 @@ function setupChat(responses) {
     input.value = '';
     send.disabled = true;
     try {
-      const reply = await getCompanionReply(message, responses);
+      const reply = await getCompanionReply(message);
       appendMessage('assistant', reply.response_text, (reply.suggested_verses || []).join('  ·  '));
     } catch {
-      appendMessage('assistant', 'I couldn’t reach the companion service just now. Please try again in a little while.');
+      appendMessage('assistant', 'Gemini could not respond. Confirm GEMINI_API_KEY is set in Vercel, then try again.');
     } finally {
       send.disabled = false;
       input.focus();
@@ -287,15 +275,16 @@ async function init() {
   renderArchive();
   setupPrayerRoom();
 
+  const page = document.body.dataset.page;
+  if (page === 'chat') setupChat();
+
   try {
     const response = await fetch(DATA_URL);
     if (!response.ok) throw new Error('Content unavailable');
     const data = await response.json();
 
-    const page = document.body.dataset.page;
     if (page === 'home' && data.devotionals.length) renderHome(getTodaysDevotional(data.devotionals));
     if (page === 'prayer') renderPrayerWall(data.prayers);
-    if (page === 'chat') setupChat(data.chat_responses);
   } catch {
     showLoadError();
     if (document.body.dataset.page === 'chat') {
