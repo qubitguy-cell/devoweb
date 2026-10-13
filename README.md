@@ -1,48 +1,81 @@
 # Daily Bread
 
-An evolution of the original devotional web for meditation project.
+Daily Bread is a static devotional web app for quiet reading, prayer, community conversation, and journaling. It combines a local content layer with optional Vercel Gemini AI and Supabase-powered account, chat, and file-sharing features.
 
-Static devotional pages with a Vercel Gemini proxy and Supabase-powered accounts, community chat, and PDF journal library. There is no build step; browser modules load Supabase JS from a CDN.
+## Overview
 
-## Gemini companion
+This project keeps the experience lightweight and deployable on a static host such as Vercel:
+
+- `index.html`: daily devotional reading, date tracking, and reading streaks
+- `prayer-room.html`: prayer prompts, breathing guidance, and personal prayer archive
+- `chat.html`: AI companion experience using `/api/gemini` with a local fallback
+- `sign-in.html`: email/password sign-in, sign-up, and password reset
+- `community.html`: authenticated community chat using Supabase Realtime
+- `library.html`: public journal library with authenticated upload and download access
+
+Daily content is stored in `assets/database.json`. Reading progress, prayer notes, and theme choices live in the browser via `localStorage`.
+
+## Features
+
+- Light and dark mode with a collapsible top-right menu
+- Daily devotionals and verse-based reading flow
+- Prayer room with breathing cue and saved prayer entries
+- Optional Gemini AI companion with a server-side API key
+- Supabase login flow with email authentication
+- Community chat for signed-in members
+- Journal library for public PDF viewing and authenticated uploads
+
+## Deployment and local development
+
+This project is designed for static hosting, but some features require HTTP access.
+
+1. Install the Vercel CLI if needed.
+2. Run `vercel dev` from the project root for local testing.
+3. Open the site via `http://localhost:3000` or a deployed Vercel URL.
+4. Do not open the site only through `file://`; browser fetches and serverless routes will not work properly.
+
+## Gemini setup
 
 1. Create a Gemini API key in Google AI Studio.
-2. In Vercel, add `GEMINI_API_KEY` as an environment variable for the project. Optionally set `GEMINI_MODEL` to another supported Gemini model; the default is `gemini-2.5-flash`.
-3. Redeploy after adding or changing environment variables. The browser calls `/api/gemini`; the key stays on the server.
+2. In Vercel, add `GEMINI_API_KEY` as an environment variable for the project.
+3. Optionally set `GEMINI_MODEL`; the default is `gemini-2.5-flash`.
+4. Redeploy after changing environment variables.
 
-For local Vercel development, install the Vercel CLI and run `vercel dev` from this folder. Opening the HTML directly with `file://` will not support JSON fetches or serverless routes.
+The browser calls `/api/gemini`, so the API key stays server-side.
 
 ## Supabase setup
 
 1. Create a project at [supabase.com](https://supabase.com/).
-2. In **Project Settings > API**, copy the Project URL and publishable key (or legacy `anon` key) into `assets/supabase-config.js`. These are public browser credentials; never use a `service_role` key in this site.
-3. In **Authentication > Providers**, enable Email. Under **Authentication > URL Configuration**, add your Vercel URL to the allowed redirect URLs. Configure email confirmation as you prefer.
-4. Open **SQL Editor**, paste and run `supabase-schema.sql`. It creates the `community_messages` and `journals` tables, row-level security policies, the public `journals` Storage bucket, and upload/download policies. It also enables Realtime for community messages.
-5. Deploy the project to Vercel over HTTPS. For local testing, use `vercel dev`; opening pages with `file://` does not support API and module requests.
+2. In **Project Settings > API**, copy the Project URL and publishable key into `assets/supabase-config.js`.
+3. In **Authentication > Providers**, enable Email.
+4. In **Authentication > URL Configuration**, add your Vercel URL to the allowed redirect URLs.
+5. Open **SQL Editor** and paste/run `supabase-schema.sql`.
 
-Email/password signup, sign-in, and password reset are on `sign-in.html`. If email confirmation is enabled, members must confirm using the Supabase email before signing in.
+The schema creates:
 
-## Gemini companion
+- `community_messages` table
+- `journals` table
+- public Storage bucket for PDFs
+- Row-level security policies
+- Realtime support for community messages
 
-Set `GEMINI_API_KEY` in Vercel project environment variables. Optionally set `GEMINI_MODEL`; the default is `gemini-2.5-flash`. Redeploy after changing environment variables. The browser calls `/api/gemini`, so the Gemini key remains server-side.
+Email/password sign-up, sign-in, and password reset live in `sign-in.html`.
 
-## Journal library
+## Journal library rules
 
-The `library.html` route lists public PDFs stored in Supabase Storage and indexed in the `journals` table. Anyone can view/download shared files; signed-in users can upload PDFs up to 15 MB. The SQL setup validates uploader ownership, file type, size, and metadata limits. Only share PDFs you have permission to distribute and that contain no sensitive information.
+The `library.html` page lists public PDFs stored in Supabase Storage and indexed in the `journals` table.
 
-## Navigation and themes
+- Anyone can view or download public files.
+- Signed-in users can upload PDFs up to 15 MB.
+- File type, uploader ownership, size, and metadata checks are enforced in `supabase-schema.sql`.
+- Only upload files you have permission to share.
 
-All pages share a collapsible top-right menu and a light/dark theme toggle. The chosen theme is saved in localStorage on the current browser.
+## Security notes
 
-## Pages
+- Never expose a `service_role` key in the browser.
+- Keep secrets in Vercel environment variables, not client code.
+- Use HTTPS in production and verify redirect URLs in Supabase.
 
-- `index.html`: daily devotional, reading streak, and read state.
-- `prayer-room.html`: preset prayers, breathing guide, and local prayer archive.
-- `chat.html`: Gemini companion with local JSON keyword responses as an offline fallback.
-- `sign-in.html`: email/password account creation, sign-in, and password reset.
-- `community.html`: realtime group chat for authenticated members.
-- `library.html`: public PDF journal library with authenticated uploads.
+## Repository note
 
-The community table is readable only to authenticated members; messages store a display name, not an email. The library and its files are public to anyone who can open the site. Upload permissions and file limits are enforced in `supabase-schema.sql`.
-
-Daily content lives in `assets/database.json`. Streaks, read state, and personal prayer entries live in the visitor's browser localStorage.
+Original repository: **devoweb**, a devotional web app for meditation and reflection.
