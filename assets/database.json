@@ -1,0 +1,135 @@
+{
+  "devotionals": [
+    {
+      "id": "still-waters",
+      "date": "2026-10-13",
+      "title": "A place to be still",
+      "verse": "Be still, and know that I am God.",
+      "reference": "Psalm 46:10",
+      "scripture": "Psalm 46:1–11",
+      "body": "Stillness is not the absence of noise around you. It is the choice to loosen your grip on what you cannot carry alone. Take one slow breath. You are allowed to meet this moment without having every answer.",
+      "thought": "You do not have to solve tomorrow to be held today.",
+      "tag": "Stillness"
+    },
+    {
+      "id": "daily-strength",
+      "date": "2026-10-14",
+      "title": "Strength for this hour",
+      "verse": "My grace is sufficient for you, for my power is made perfect in weakness.",
+      "reference": "2 Corinthians 12:9",
+      "scripture": "2 Corinthians 12:7–10",
+      "body": "You are not asked to be limitless. Grace meets you at the edge of your own strength, in the honest place where you can ask for help and receive it. Let today be taken one faithful hour at a time.",
+      "thought": "A small step taken with courage is still courage.",
+      "tag": "Strength"
+    },
+    {
+      "id": "open-hands",
+      "date": "2026-10-15",
+      "title": "Open hands",
+      "verse": "Cast all your anxiety on him because he cares for you.",
+      "reference": "1 Peter 5:7",
+      "scripture": "1 Peter 5:6–11",
+      "body": "Care does not ask you to pretend everything is fine. You can bring the unfinished, the uncertain, and the heavy just as they are. Naming what weighs on you can be the first quiet movement toward release.",
+      "thought": "What you carry matters, and you do not have to carry it alone.",
+      "tag": "Trust"
+    },
+    {
+      "id": "morning-mercy",
+      "date": "2026-10-16",
+      "title": "Mercy, made new",
+      "verse": "His mercies never come to an end; they are new every morning.",
+      "reference": "Lamentations 3:22–23",
+      "scripture": "Lamentations 3:19–26",
+      "body": "A difficult yesterday does not get the final word over this morning. Begin again without demanding that you feel ready. There is room for a fresh start, even if it begins with one ordinary act of care.",
+      "thought": "Beginning again is a kind of hope.",
+      "tag": "Renewal"
+    },
+    {
+      "id": "enough-light",
+      "date": "2026-10-17",
+      "title": "Enough light for the next step",
+      "verse": "Your word is a lamp for my feet, a light on my path.",
+      "reference": "Psalm 119:105",
+      "scripture": "Psalm 119:97–112",
+      "body": "The path ahead may not be fully visible, and still you can be guided through the part that is here. Let the next good step be enough for now. Clarity often arrives while we are walking, not before.",
+      "thought": "You only need enough light for the next step.",
+      "tag": "Guidance"
+    },
+    {
+      "id": "deep-roots",
+      "date": "2026-10-18",
+      "title": "Rooted in love",
+      "verse": "I have loved you with an everlasting love.",
+      "reference": "Jeremiah 31:3",
+      "scripture": "Jeremiah 31:1–6",
+      "body": "You are more than what you achieve, what you repair, or what others need from you. Let love be the ground beneath your feet today: steady, unhurried, and not something you have to earn.",
+      "thought": "You are worthy of tenderness before you do a thing.",
+      "tag": "Belonging"
+    },
+    {
+      "id": "quiet-courage",
+      "date": "2026-10-19",
+      "title": "Quiet courage",
+      "verse": "Do not fear, for I am with you.",
+      "reference": "Isaiah 41:10",
+      "scripture": "Isaiah 41:8–13",
+      "body": "Courage is not always a loud certainty. Sometimes it is showing up while your hands are still shaking, or asking someone to stay close. Presence can be stronger than fear, even when fear has not yet gone.",
+      "thought": "You can be afraid and still take the next step.",
+      "tag": "Courage"
+    }
+  ],
+  "prayers": [
+    {
+      "category": "peace",
+      "title": "For a quieter mind",
+      "content": "May peace find me in the middle of what is unfinished. Help me breathe slowly, release what is beyond my reach, and rest in the care available to me now. Amen."
+    },
+    {
+      "category": "strength",
+      "title": "For the strength to continue",
+      "content": "Give me courage for the next small step. When I feel depleted, remind me that asking for support is also a brave thing to do. Let me meet myself with patience. Amen."
+    },
+    {
+      "category": "gratitude",
+      "title": "For what is good and near",
+      "content": "Open my eyes to one good thing in this ordinary day. Keep gratitude gentle and honest, making room for both what is beautiful and what is hard. Amen."
+    },
+    {
+      "category": "hope",
+      "title": "For a new beginning",
+      "content": "When the way forward feels hidden, give me enough light for the next step. Help me believe that a beginning can be small and still be real. Amen."
+    }
+  ],
+  "chat_responses": [
+    {
+      "keywords": ["anxious", "anxiety", "worried", "panic", "overwhelmed", "stress", "afraid"],
+      "response_text": "That sounds like a lot to hold at once. You do not have to untangle it all right now. Try one slow breath, and let this moment be smaller than the whole story. If it helps, tell someone you trust what feels heaviest.",
+      "suggested_verses": ["Cast all your anxiety on him because he cares for you.", "1 Peter 5:7"]
+    },
+    {
+      "keywords": ["lonely", "alone", "isolated", "left out", "miss", "friendless"],
+      "response_text": "Loneliness can make the room feel very large. I’m glad you put words to it here. You deserve connection and care; reaching out to one safe person, even with a simple hello, can be a gentle start.",
+      "suggested_verses": ["I have loved you with an everlasting love.", "Jeremiah 31:3"]
+    },
+    {
+      "keywords": ["joyful", "joy", "happy", "grateful", "celebrate", "thankful", "hopeful"],
+      "response_text": "It is lovely that joy is here with you. You might pause long enough to notice what this moment feels like, without needing to make it last forever. What is one small thing you want to remember about today?",
+      "suggested_verses": ["His mercies never come to an end; they are new every morning.", "Lamentations 3:22–23"]
+    },
+    {
+      "keywords": ["grief", "grieving", "loss", "died", "death", "mourning", "heartbroken", "miss them"],
+      "response_text": "I’m sorry this hurts. Grief doesn’t follow a schedule, and you don’t need to find a bright side to make this moment acceptable. If you can, let someone kind be near you today. You are allowed to take this slowly.",
+      "suggested_verses": ["The Lord is close to the brokenhearted.", "Psalm 34:18"]
+    },
+    {
+      "keywords": ["tired", "exhausted", "burned out", "burnout", "weary", "rest"],
+      "response_text": "It makes sense to feel worn down when you’ve been carrying a lot. Rest is not something you have to earn by finishing everything. Could one small demand wait while you take a real pause?",
+      "suggested_verses": ["Come to me, all you who are weary and burdened, and I will give you rest.", "Matthew 11:28"]
+    },
+    {
+      "keywords": ["angry", "anger", "frustrated", "resentful", "mad"],
+      "response_text": "There may be something important underneath that anger. You don’t have to act on it immediately or shame yourself for feeling it. A little space can help you hear what you need and choose what to do next.",
+      "suggested_verses": ["Be quick to listen, slow to speak and slow to become angry.", "James 1:19"]
+    }
+  ]
+}

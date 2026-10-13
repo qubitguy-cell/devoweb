@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <meta name="description" content="A quiet place to breathe, pray, and keep a private prayer journal on your device.">
+  <title>Prayer Room | Daily Bread</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./assets/site-ui.js" defer></script>
+  <script src="./assets/app.js" defer></script>
+</head>
+<body data-page="prayer">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./index.html" aria-label="Daily Bread home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M5 9c0 4 3 7 7 7M19 9c0 4-3 7-7 7M8 5c0 3 2 5 4 5M16 5c0 3-2 5-4 5"/></svg></span>
+        Daily Bread
+      </a>
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation" title="Open navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="main-nav" id="site-menu" aria-label="Main navigation" hidden>
+        <a class="nav-link" href="./index.html">Today</a>
+        <a class="nav-link" href="./prayer-room.html" aria-current="page">Prayer room</a>
+        <a class="nav-link" href="./chat.html">Companion</a>
+        <a class="nav-link" href="./community.html">Community</a>
+        <a class="nav-link" href="./library.html">Journal library</a>
+        <a class="nav-link" href="./sign-in.html">Sign in</a>
+      </nav>
+      <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="prayer-heading">
+      <div>
+        <p class="eyebrow">The sanctuary</p>
+        <h1 class="page-title">A little room to let go.</h1>
+        <p class="page-intro">Pause, find a few words, or simply be here for a moment.</p>
+      </div>
+      <button class="breath-control" id="breathing-guide" type="button" aria-pressed="false">
+        <span class="breath-orb" aria-hidden="true"></span>
+        <span id="breathing-label">Begin a breathing rhythm</span>
+      </button>
+    </div>
+
+    <section class="prayer-columns">
+      <div>
+        <p class="section-label">A prayer for this moment</p>
+        <div class="prayer-list" id="prayer-wall" aria-live="polite">
+          <p class="archive-empty">Gathering a few words...</p>
+        </div>
+      </div>
+
+      <div>
+        <form class="journal-panel" id="prayer-form">
+          <p class="eyebrow">Your own words</p>
+          <h2 class="journal-title">A private prayer</h2>
+          <p class="journal-intro">Your words stay in this browser, on this device.</p>
+          <label class="section-label" for="journal-input">What’s on your heart?</label>
+          <textarea class="journal-input" id="journal-input" maxlength="4000" placeholder="Write whatever you need to say..."></textarea>
+          <button class="button-primary release-action" id="release-prayer" type="submit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 19V5m-7 7 7-7 7 7"/></svg>
+            <span>Release with amen</span>
+          </button>
+          <p class="journal-message" id="journal-message" aria-live="polite"></p>
+        </form>
+
+        <section class="archive" aria-labelledby="archive-title">
+          <div class="archive-heading">
+            <h2 id="archive-title">My prayer archive</h2>
+            <span class="archive-count" id="archive-count">0 entries</span>
+          </div>
+          <ul class="archive-list" id="archive-list"></ul>
+        </section>
+      </div>
+    </section>
+    <p id="data-error" class="journal-message" role="alert" hidden>Prayer readings could not be loaded. Open this site through a local web server and try again.</p>
+  </main>
+
+  <footer class="page-footer"><div class="footer-inner">Your journal is stored only on this device.</div></footer>
+</body>
+</html>

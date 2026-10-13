@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <meta name="description" content="Browse and share devotional journals and spiritual reading PDFs with the community.">
+  <title>Journal Library | Daily Bread</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./assets/site-ui.js" defer></script>
+  <script type="module" src="./assets/supabase-library.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation" title="Open navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <a class="brand" href="./index.html" aria-label="Daily Bread home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M5 9c0 4 3 7 7 7M19 9c0 4-3 7-7 7M8 5c0 3 2 5 4 5M16 5c0 3-2 5-4 5"/></svg></span>Daily Bread</a>
+      <nav class="main-nav" id="site-menu" aria-label="Main navigation" hidden>
+        <a class="nav-link" href="./index.html">Today</a><a class="nav-link" href="./prayer-room.html">Prayer room</a><a class="nav-link" href="./chat.html">Companion</a><a class="nav-link" href="./community.html">Community</a><a class="nav-link" href="./library.html" aria-current="page">Journal library</a><a class="nav-link" href="./sign-in.html">Account</a>
+      </nav>
+      <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+    </div>
+  </header>
+  <main class="page-shell">
+    <header class="library-heading">
+      <div><p class="eyebrow">Shared reading</p><h1 class="page-title">Journal library</h1><p class="page-intro">A shelf of reflections, readings, and resources shared by the community.</p></div>
+      <a class="button-secondary" id="library-account-link" href="./sign-in.html">Sign in to upload</a>
+    </header>
+
+    <section class="library-tools" aria-label="Journal search">
+      <label class="library-search-label" for="journal-search">Find a journal</label>
+      <input class="library-search" id="journal-search" type="search" maxlength="100" placeholder="Search titles, people, or descriptions...">
+      <p class="community-status" id="library-status" role="status" aria-live="polite">Loading journal library...</p>
+    </section>
+    <section class="journal-list" id="journal-list" aria-label="Shared PDF journals"><p class="library-empty">Loading shared journals...</p></section>
+
+    <p id="upload-sign-in-note" class="library-note">Anyone can browse and download. Sign in to share a PDF with the library.</p>
+    <form class="upload-panel" id="pdf-upload-form" hidden>
+      <p class="eyebrow">Contribute</p>
+      <h2>Share a journal</h2>
+      <p class="journal-intro">Upload only material you have permission to share. PDFs up to 15 MB are accepted.</p>
+      <div class="upload-fields">
+        <label class="form-field">Title<input id="pdf-title" type="text" maxlength="100" required placeholder="A name for this journal"></label>
+        <label class="form-field">Description<input id="pdf-description" type="text" maxlength="300" placeholder="What might readers find inside?"></label>
+        <label class="form-field pdf-file-field">PDF file<input id="pdf-file" type="file" accept="application/pdf,.pdf" required></label>
+      </div>
+      <button class="button-primary" id="pdf-submit" type="submit">Upload PDF</button>
+    </form>
+  </main>
+  <footer class="page-footer"><div class="footer-inner">Shared files are visible to anyone with this library link.</div></footer>
+</body>
+</html>

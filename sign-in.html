@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <meta name="description" content="Sign in or create an account to join the Daily Bread community chat.">
+  <title>Sign In | Daily Bread</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./assets/site-ui.js" defer></script>
+  <script type="module" src="./assets/supabase-auth.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./index.html" aria-label="Daily Bread home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M5 9c0 4 3 7 7 7M19 9c0 4-3 7-7 7M8 5c0 3 2 5 4 5M16 5c0 3-2 5-4 5"/></svg></span>
+        Daily Bread
+      </a>
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation" title="Open navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="main-nav" id="site-menu" aria-label="Main navigation" hidden>
+        <a class="nav-link" href="./index.html">Today</a>
+        <a class="nav-link" href="./prayer-room.html">Prayer room</a>
+        <a class="nav-link" href="./chat.html">Companion</a>
+        <a class="nav-link" href="./community.html">Community</a>
+        <a class="nav-link" href="./library.html">Journal library</a>
+      </nav>
+      <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      </button>
+    </div>
+  </header>
+  <main class="page-shell">
+    <section class="account-layout">
+      <div class="account-panel" id="auth-panel">
+        <p class="eyebrow">Your community</p>
+        <h1 id="auth-title">Welcome back.</h1>
+        <p>Sign in to join the conversation, or create an account to meet others here.</p>
+        <form id="auth-form">
+          <div class="auth-modes" role="radiogroup" aria-label="Account action">
+            <label class="auth-mode"><input type="radio" name="auth-mode" value="signin" checked>Sign in</label>
+            <label class="auth-mode"><input type="radio" name="auth-mode" value="signup">Create account</label>
+          </div>
+          <div class="form-field" id="display-name-field" hidden>
+            <label for="display-name">Name shown in community</label>
+            <input id="display-name" name="display-name" type="text" maxlength="60" autocomplete="nickname" placeholder="How should we address you?">
+          </div>
+          <div class="form-field">
+            <label for="auth-email">Email address</label>
+            <input id="auth-email" name="email" type="email" maxlength="254" autocomplete="email" required placeholder="you@example.com">
+          </div>
+          <div class="form-field">
+            <label for="auth-password">Password</label>
+            <input id="auth-password" name="password" type="password" minlength="6" autocomplete="current-password" required placeholder="At least 6 characters">
+          </div>
+          <button class="button-primary auth-submit" id="auth-submit" type="submit">Sign in</button>
+        </form>
+        <button class="text-button" id="forgot-password" type="button">Send password reset email</button>
+        <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="account-panel signed-in-state" id="signed-in-state" hidden>
+        <p class="eyebrow">You’re signed in</p>
+        <h1>Welcome in.</h1>
+        <p id="signed-in-email"></p>
+        <div class="account-actions">
+          <a class="button-primary" href="./community.html">Enter community chat</a>
+          <button class="button-secondary" id="sign-out" type="button">Sign out</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="page-footer"><div class="footer-inner">A listening space is better when we listen with care.</div></footer>
+</body>
+</html>

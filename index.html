@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <meta name="description" content="A quiet daily devotional for reflection, prayer, and a moment of stillness.">
+  <title>Daily Bread | A moment of stillness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./assets/site-ui.js" defer></script>
+  <script src="./assets/app.js" defer></script>
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./index.html" aria-label="Daily Bread home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M5 9c0 4 3 7 7 7M19 9c0 4-3 7-7 7M8 5c0 3 2 5 4 5M16 5c0 3-2 5-4 5"/></svg></span>
+        Daily Bread
+      </a>
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation" title="Open navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="main-nav" id="site-menu" aria-label="Main navigation" hidden>
+        <a class="nav-link" href="./index.html" aria-current="page">Today</a>
+        <a class="nav-link" href="./prayer-room.html">Prayer room</a>
+        <a class="nav-link" href="./chat.html">Companion</a>
+        <a class="nav-link" href="./community.html">Community</a>
+        <a class="nav-link" href="./library.html">Journal library</a>
+        <a class="nav-link" href="./sign-in.html">Sign in</a>
+      </nav>
+      <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="home-hero" aria-labelledby="hero-verse">
+      <div class="hero-copy">
+        <p class="hero-date" id="today-date">A moment for today</p>
+        <h1 class="hero-verse" id="hero-verse">Be still, and know that I am God.</h1>
+        <p class="hero-reference" id="hero-reference">Psalm 46:10</p>
+      </div>
+    </section>
+
+    <div class="home-toolbar">
+      <p class="section-label">Your daily bread</p>
+      <div class="streak" aria-live="polite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 22c4.4 0 7-3 7-7.1 0-2.7-1.4-4.8-3.2-6.4.1 2.1-1 3.2-2.1 3.6.1-3.9-1.4-7-4.2-9.1.2 3.5-1 5.4-2.4 7.2A7.6 7.6 0 0 0 5 15c0 4 2.8 7 7 7Z"/><path d="M12 22c1.7 0 3-1.3 3-3.1 0-1.3-.7-2.3-1.7-3.1-.1 1.1-.7 1.6-1.4 1.8-.1-1.7-.8-2.8-2.1-3.8.1 1.4-.4 2.2-.9 2.9-.5.7-.9 1.3-.9 2.2 0 1.8 1.3 3.1 4 3.1Z"/></svg>
+        <span><strong id="streak-count">1</strong> day streak</span>
+      </div>
+    </div>
+
+    <section class="devotional-layout" aria-labelledby="devotional-title">
+      <article class="devotional-main">
+        <p class="eyebrow" id="devotional-tag">Stillness</p>
+        <h2 class="devotional-title" id="devotional-title">A place to be still</h2>
+        <p class="scripture-line"><span id="scripture-text">Be still, and know that I am God.</span><span class="scripture-reference"><span id="scripture-reference">Psalm 46:10</span><span aria-hidden="true"> · </span>Reading: <span id="scripture-reading">Psalm 46:1–11</span></span></p>
+        <p class="reflection" id="reflection-text">Stillness is not the absence of noise around you. It is the choice to loosen your grip on what you cannot carry alone. Take one slow breath. You are allowed to meet this moment without having every answer.</p>
+        <div class="thought-block">
+          <p class="section-label">Thought for the day</p>
+          <p class="thought" id="thought-text">You do not have to solve tomorrow to be held today.</p>
+        </div>
+      </article>
+
+      <aside class="devotional-aside">
+        <p class="eyebrow">A small practice</p>
+        <h2 class="aside-title">Carry this with you</h2>
+        <p class="aside-copy">Take a moment with today’s reading. When you’re ready, keep this quiet pause as part of your day.</p>
+        <button class="button-primary read-action" id="mark-read" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+          <span>Mark as read</span>
+        </button>
+        <p class="read-note" id="read-note" aria-live="polite"></p>
+      </aside>
+    </section>
+    <p id="data-error" class="journal-message" role="alert" hidden>Daily readings could not be loaded. Open this site through a local web server and try again.</p>
+  </main>
+
+  <footer class="page-footer"><div class="footer-inner">A little space for what matters.</div></footer>
+</body>
+</html>
