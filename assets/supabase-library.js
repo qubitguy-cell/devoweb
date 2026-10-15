@@ -93,16 +93,15 @@ if (!hasSupabaseConfig) {
   currentUser = data.session?.user || null;
   form.hidden = !currentUser;
   document.getElementById('upload-sign-in-note').hidden = Boolean(currentUser);
-  document.getElementById('library-account-link').textContent = currentUser ? 'Signed in' : 'Sign in to upload';
-  if (currentUser) document.getElementById('library-account-link').removeAttribute('href');
+  document.getElementById('library-account-link').textContent = currentUser ? 'Your account' : 'Sign in to upload';
+  document.getElementById('library-account-link').href = currentUser ? './account.html' : './sign-in.html';
 
   supabase.auth.onAuthStateChange((_event, session) => {
     currentUser = session?.user || null;
     form.hidden = !currentUser;
     document.getElementById('upload-sign-in-note').hidden = Boolean(currentUser);
-    document.getElementById('library-account-link').textContent = currentUser ? 'Signed in' : 'Sign in to upload';
-    if (!currentUser) document.getElementById('library-account-link').href = './sign-in.html';
-    else document.getElementById('library-account-link').removeAttribute('href');
+    document.getElementById('library-account-link').textContent = currentUser ? 'Your account' : 'Sign in to upload';
+    document.getElementById('library-account-link').href = currentUser ? './account.html' : './sign-in.html';
   });
 
   await loadDocuments();
@@ -120,7 +119,7 @@ form.addEventListener('submit', async (event) => {
   const file = document.getElementById('pdf-file').files[0];
   const title = document.getElementById('pdf-title').value.trim();
   const description = document.getElementById('pdf-description').value.trim();
-  if (!file || file.type !== 'application/pdf' || !file.name.toLowerCase().endsWith('.pdf')) {
+  if (!file || (file.type && file.type !== 'application/pdf') || !file.name.toLowerCase().endsWith('.pdf')) {
     setStatus('Choose a PDF file to upload.', true);
     return;
   }
@@ -140,36 +139,43 @@ form.addEventListener('submit', async (event) => {
   const storagePath = `${currentUser.id}/${crypto.randomUUID()}.pdf`;
   const authorName = currentUser.user_metadata?.display_name || 'Community member';
 
-  const { error: uploadError } = await supabase.storage.from('journals').upload(storagePath, file, {
-    contentType: 'application/pdf',
-    cacheControl: '3600',
-    upsert: false
-  });
+  let uploaded = false;
+  try {
+    const { error: uploadError } = await supabase.storage.from('journals').upload(storagePath, file, {
+      contentType: 'application/pdf',
+      cacheControl: '3600',
+      upsert: false
+    });
 
-  if (uploadError) {
-    console.error('Journal upload failed:', uploadError);
-    setStatus('Upload failed. Check the Storage bucket and policies, then try again.', true);
-    submit.disabled = false;
-    return;
-  }
+    if (uploadError) throw uploadError;
+    uploaded = true;
 
-  const { error: insertError } = await supabase.from('journals').insert({
-    user_id: currentUser.id,
-    title,
-    description,
-    author_name: authorName,
-    file_name: fileName,
-    storage_path: storagePath,
-    file_size: file.size
-  });
+    const { error: insertError } = await supabase.from('journals').insert({
+      user_id: currentUser.id,
+      title,
+      description,
+      author_name: authorName,
+      file_name: fileName,
+      storage_path: storagePath,
+      file_size: file.size
+    });
 
-  if (insertError) {
-    console.error('Journal metadata could not be saved:', insertError);
-    setStatus('PDF uploaded but could not be added to the library. Check the journals table policy.', true);
-  } else {
+    if (insertError) throw insertError;
+    uploaded = false;
     form.reset();
     setStatus('Journal shared with the library.');
     await loadDocuments();
+  } catch (error) {
+    console.error('Journal upload failed:', error);
+    if (uploaded) {
+      try {
+        await supabase.storage.from('journals').remove([storagePath]);
+      } catch (cleanupError) {
+        console.error('Could not remove incomplete journal upload:', cleanupError);
+      }
+    }
+    setStatus(error.message || 'Upload failed. Check your Supabase Storage bucket and policies.', true);
+  } finally {
+    submit.disabled = false;
   }
-  submit.disabled = false;
 });

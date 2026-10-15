@@ -275,6 +275,22 @@ button, input, textarea, .main-nav, .home-hero, .devotional-aside, .journal-pane
 .signed-in-state { padding-top: 20px; }
 .signed-in-state p { color: var(--muted); font-size: 13px; }
 .account-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.profile-heading { margin-bottom: 26px; }
+.profile-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1px 36px; width: min(820px, 100%); margin: 0 auto; border-top: 1px solid var(--line); }
+.profile-identity { display: flex; grid-column: 1 / -1; align-items: center; gap: 18px; padding: 28px 0; border-bottom: 1px solid var(--line); }
+.profile-identity h2 { margin: 0; font: 500 25px/1.3 var(--serif); overflow-wrap: anywhere; }
+.profile-identity p { margin: 4px 0 0; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.profile-avatar { display: grid; flex: 0 0 82px; width: 82px; aspect-ratio: 1; place-items: center; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface-raised); color: var(--accent); font: 500 34px/1 var(--serif); }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-section { min-width: 0; padding: 25px 0; border-bottom: 1px solid var(--line); }
+.profile-section h2 { margin: 0 0 18px; font: 500 21px/1.3 var(--serif); }
+.profile-facts { margin: 0; }
+.profile-facts > div { display: grid; grid-template-columns: minmax(100px, .7fr) minmax(0, 1.3fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.profile-facts dt { color: var(--quiet); font-size: 12px; }
+.profile-facts dd { margin: 0; color: var(--ink); font-size: 12px; overflow-wrap: anywhere; }
+.profile-form textarea { width: 100%; min-height: 82px; resize: vertical; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #141512; color: var(--ink); }
+.profile-loading { width: min(820px, 100%); margin: 18px auto; }
+:root[data-theme="light"] .profile-form textarea { background: #fffefa; color: var(--ink); }
 .button-secondary { min-height: 42px; padding: 0 14px; border-color: var(--line-strong); background: transparent; color: var(--ink); font-size: 12px; }
 .button-secondary:hover { border-color: var(--accent-dark); background: rgba(255,255,255,.04); }
 .community-shell { display: flex; flex-direction: column; width: min(780px, 100%); min-height: min(700px, calc(100vh - 190px)); margin: 30px auto 0; border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(25,26,24,.65); }
@@ -328,6 +344,8 @@ button, input, textarea, .main-nav, .home-hero, .devotional-aside, .journal-pane
   .message { max-width: 90%; }
   .chat-heading { padding: 15px; }
   .chat-messages { padding-inline: 13px; }
+  .profile-layout { grid-template-columns: 1fr; }
+  .profile-identity { grid-column: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

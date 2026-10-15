@@ -53,6 +53,7 @@ if (!hasSupabaseConfig) {
   if (data.session?.user) {
     const next = new URLSearchParams(location.search).get('next');
     if (next === 'community') location.replace('./community.html');
+    else if (next === 'account') location.replace('./account.html');
     else displaySignedIn(data.session.user);
   }
 
@@ -64,6 +65,7 @@ if (!hasSupabaseConfig) {
     if (session?.user && event === 'SIGNED_IN') {
       const next = new URLSearchParams(location.search).get('next');
       if (next === 'community') location.replace('./community.html');
+      else if (next === 'account') location.replace('./account.html');
       else displaySignedIn(session.user);
     }
   });
@@ -102,7 +104,7 @@ form.addEventListener('submit', async (event) => {
 
   if (mode === 'signin') {
     const next = new URLSearchParams(location.search).get('next');
-    location.replace(next === 'community' ? './community.html' : './index.html');
+    location.replace(next === 'community' ? './community.html' : next === 'account' ? './account.html' : './index.html');
     return;
   }
 

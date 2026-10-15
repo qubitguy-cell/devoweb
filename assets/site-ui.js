@@ -1,11 +1,10 @@
 const themeKey = 'daily-bread.theme';
 const settingsKey = 'daily-bread.user-settings';
-const defaultWallpaper = 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1600&q=80';
-const wallpaperOptions = {
-  journaling: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1600&q=80',
-  sunrise: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
-  olive: 'https://images.unsplash.com/photo-1516575150278-77136aed6920?auto=format&fit=crop&w=1600&q=80'
-};
+const wallpaperOptions = [
+  'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1600&q=80',
+  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
+  'https://images.unsplash.com/photo-1516575150278-77136aed6920?auto=format&fit=crop&w=1600&q=80'
+];
 
 const root = document.documentElement;
 const menuButton = document.getElementById('menu-toggle');
@@ -31,10 +30,11 @@ function persistSettings(partial) {
   }
 }
 
-function applyWallpaper(value = 'journaling') {
-  const wallpaper = wallpaperOptions[value] || wallpaperOptions.journaling || defaultWallpaper;
+function applyWallpaper() {
+  const now = new Date();
+  const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+  const wallpaper = wallpaperOptions[dayNumber % wallpaperOptions.length];
   document.documentElement.style.setProperty('--page-wallpaper', `url("${wallpaper}")`);
-  persistSettings({ wallpaper: value });
 }
 
 async function syncUserPreference(key, value) {
@@ -82,7 +82,7 @@ try {
   savedTheme = savedSettings.theme || 'dark';
 }
 setTheme(savedTheme);
-applyWallpaper(savedSettings.wallpaper || 'journaling');
+applyWallpaper();
 
 if (themeButton) {
   themeButton.addEventListener('click', async () => {
@@ -110,11 +110,10 @@ function setMenuOpen(open) {
 }
 
 function updateSignedInLabel(isSignedIn) {
-  const signInLinks = Array.from(document.querySelectorAll('a.nav-link[href="./sign-in.html"], a.nav-link[href$="sign-in.html"]'));
-  signInLinks.forEach((link) => {
-    if (!link) return;
+  const accountLinks = Array.from(document.querySelectorAll('a.nav-link[href="./sign-in.html"], a.nav-link[href$="sign-in.html"], a.nav-link[href="./account.html"], a.nav-link[href$="account.html"]'));
+  accountLinks.forEach((link) => {
     if (isSignedIn) {
-      link.href = './community.html';
+      link.href = './account.html';
       link.setAttribute('aria-label', 'Account');
       link.innerHTML = '<i class="bi bi-person-check"></i><span>Account</span>';
     } else {
@@ -135,13 +134,10 @@ async function syncAuthState() {
     updateSignedInLabel(Boolean(session));
     if (session?.user?.user_metadata) {
       const metaTheme = session.user.user_metadata.theme;
-      const metaWallpaper = session.user.user_metadata.wallpaper;
       if (metaTheme) setTheme(metaTheme);
-      if (metaWallpaper) applyWallpaper(metaWallpaper);
-      if (metaTheme || metaWallpaper) {
+      if (metaTheme) {
         persistSettings({
-          theme: metaTheme || root.dataset.appearance || 'dark',
-          wallpaper: metaWallpaper || 'journaling'
+          theme: metaTheme
         });
       }
     }
@@ -151,9 +147,7 @@ async function syncAuthState() {
         updateSignedInLabel(Boolean(session));
         if (session?.user?.user_metadata) {
           const metaTheme = session.user.user_metadata.theme;
-          const metaWallpaper = session.user.user_metadata.wallpaper;
           if (metaTheme) setTheme(metaTheme);
-          if (metaWallpaper) applyWallpaper(metaWallpaper);
         }
       }
     });

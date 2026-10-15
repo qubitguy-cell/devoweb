@@ -90,27 +90,39 @@ if (!hasSupabaseConfig) {
   });
 }
 
+input.addEventListener('keydown', (event) => {
+  if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+  event.preventDefault();
+  form.requestSubmit();
+});
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   const text = input.value.trim();
   if (!currentUser || !text || text.length > 1000 || send.disabled) return;
 
   send.disabled = true;
-  const { error } = await supabase.from('community_messages').insert({
-    user_id: currentUser.id,
-    display_name: currentUser.user_metadata?.display_name || 'Community member',
-    text
-  });
+  try {
+    const { error } = await supabase.from('community_messages').insert({
+      user_id: currentUser.id,
+      display_name: currentUser.user_metadata?.display_name || 'Community member',
+      text
+    });
 
-  if (error) {
+    if (error) {
+      console.error('Could not send community message:', error);
+      announce('Your message could not be sent. Check your connection and Supabase policies.', true);
+    } else {
+      input.value = '';
+      announce('Message sent.');
+    }
+  } catch (error) {
     console.error('Could not send community message:', error);
-    announce('Your message could not be sent. Check your connection and Supabase policies.', true);
-  } else {
-    input.value = '';
-    announce('Message sent.');
+    announce('Your message could not be sent. Check your connection and try again.', true);
+  } finally {
+    send.disabled = false;
+    input.focus();
   }
-  send.disabled = false;
-  input.focus();
 });
 
 document.getElementById('community-sign-out').addEventListener('click', async () => {

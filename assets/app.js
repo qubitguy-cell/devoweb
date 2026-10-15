@@ -218,13 +218,20 @@ function appendMessage(role, text, suggestedVerse = '') {
 }
 
 async function getCompanionReply(message) {
-  const result = await fetch(AI_API_CONFIG.endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, history: companionHistory })
-  });
+  let result;
+  try {
+    result = await fetch(AI_API_CONFIG.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history: companionHistory })
+    });
+  } catch {
+    throw new Error('Could not reach the AI endpoint. Run this site with `vercel dev` or deploy it to Vercel.');
+  }
   const data = await result.json().catch(() => ({}));
-  if (!result.ok) throw new Error(data.error || 'Gemini is unavailable. Check the Vercel GEMINI_API_KEY setting.');
+  if (!result.ok) {
+    throw new Error(data.error || `AI request failed (${result.status}). Check the API route and GEMINI_API_KEY configuration.`);
+  }
   if (typeof data.response_text !== 'string' || !data.response_text.trim()) {
     throw new Error('Gemini returned an empty reply. Please try again.');
   }
@@ -244,6 +251,12 @@ function setupChat() {
   const input = byId('chat-input');
   const send = byId('send-message');
 
+  input.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+    event.preventDefault();
+    form.requestSubmit();
+  });
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const message = input.value.trim();
@@ -255,8 +268,8 @@ function setupChat() {
     try {
       const reply = await getCompanionReply(message);
       appendMessage('assistant', reply.response_text, (reply.suggested_verses || []).join('  ·  '));
-    } catch {
-      appendMessage('assistant', 'Gemini could not respond. Confirm GEMINI_API_KEY is set in Vercel, then try again.');
+    } catch (error) {
+      appendMessage('assistant', error instanceof Error ? error.message : 'The AI companion could not respond. Check the API configuration and try again.');
     } finally {
       send.disabled = false;
       input.focus();

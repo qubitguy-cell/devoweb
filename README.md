@@ -8,8 +8,9 @@ This project keeps the experience lightweight and deployable on a static host su
 
 - `index.html`: daily devotional reading, date tracking, and reading streaks
 - `prayer-room.html`: prayer prompts, breathing guidance, and personal prayer archive
-- `chat.html`: AI companion experience using `/api/gemini` with a local fallback
+- `chat.html`: AI companion experience using `/api/gemini`
 - `sign-in.html`: email/password sign-in, sign-up, and password reset
+- `account.html`: authenticated profile details and editable community identity
 - `community.html`: authenticated community chat using Supabase Realtime
 - `library.html`: public journal library with authenticated upload and download access
 
@@ -22,6 +23,7 @@ Daily content is stored in `assets/database.json`. Reading progress, prayer note
 - Prayer room with breathing cue and saved prayer entries
 - Gemini AI companion with a server-side API key
 - Supabase login flow with email authentication
+- Account profile with display name, avatar URL, short bio, and sign-in dates
 - Community chat for signed-in members
 - Journal library for public PDF viewing and authenticated uploads
 
@@ -41,7 +43,7 @@ This project is designed for static hosting, but some features require HTTP acce
 3. Optionally set `GEMINI_MODEL`; the default is `gemini-2.5-flash`.
 4. Redeploy after changing environment variables.
 
-The browser calls `/api/gemini`, so the API key stays server-side. The companion requires this route and does not substitute scripted replies if the key or Gemini service is unavailable.
+The browser calls `/api/gemini`, so the API key stays server-side. The companion requires this route and does not substitute scripted replies if the key or Gemini service is unavailable. Run the app through `vercel dev` locally and set `GEMINI_API_KEY` in the Vercel environment.
 
 ## Supabase setup
 
