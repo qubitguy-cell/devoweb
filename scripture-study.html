@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <meta name="description" content="Look up Bible passages and search Daily Bread readings while you study.">
+  <title>Scripture Study | Daily Bread</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./assets/site-ui.js" defer></script>
+  <script type="module" src="./assets/scripture-study.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./index.html" aria-label="Daily Bread home"><span class="brand-mark"><img src="./assets/bible-logo.svg" alt=""></span>Daily Bread</a>
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation" title="Open navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <nav class="main-nav" id="site-menu" aria-label="Main navigation" hidden>
+        <a class="nav-link" href="./index.html"><i class="bi bi-house-door"></i><span>Today</span></a>
+        <a class="nav-link" href="./prayer-room.html"><i class="bi bi-flower1"></i><span>Prayer room</span></a>
+        <a class="nav-link" href="./scripture-study.html" aria-current="page"><i class="bi bi-search"></i><span>Scripture study</span></a>
+        <a class="nav-link" href="./community.html"><i class="bi bi-people"></i><span>Community</span></a>
+        <a class="nav-link" href="./library.html"><i class="bi bi-journal-bookmark"></i><span>Journal library</span></a>
+      </nav>
+      <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch appearance" title="Switch appearance"><i class="bi bi-circle-half" aria-hidden="true"></i></button>
+    </div>
+  </header>
+  <main class="page-shell">
+    <header class="profile-heading"><p class="eyebrow">Study desk</p><h1 class="page-title">Scripture study</h1><p class="page-intro">Look up a passage by reference, or search the readings in Daily Bread.</p></header>
+    <section class="study-layout" aria-label="Bible passage search">
+      <div class="study-main">
+        <form class="study-search" id="scripture-search-form">
+          <label class="form-field" for="scripture-query">Passage or keyword<input id="scripture-query" type="search" maxlength="100" placeholder="John 3:16 or hope" required></label>
+          <button class="button-primary" type="submit"><i class="bi bi-search" aria-hidden="true"></i> Search</button>
+        </form>
+        <p class="community-status" id="scripture-status" role="status" aria-live="polite">Enter a Bible reference or a topic to begin.</p>
+        <div class="scripture-results" id="scripture-results" aria-live="polite"></div>
+      </div>
+      <aside class="study-history" aria-labelledby="study-history-title">
+        <div class="study-history-heading"><h2 id="study-history-title">Recent searches</h2><button class="icon-button" id="clear-search-history" type="button" aria-label="Clear search history" title="Clear search history"><i class="bi bi-trash3" aria-hidden="true"></i></button></div>
+        <ol id="scripture-history" class="scripture-history"></ol>
+      </aside>
+    </section>
+    <p class="study-source-note">Passage lookup uses the public-domain World English Bible. Search history stays in this browser.</p>
+  </main>
+  <footer class="page-footer"><div class="footer-inner">Read slowly. Make room for questions.</div></footer>
+</body>
+</html>

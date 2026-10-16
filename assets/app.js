@@ -5,12 +5,6 @@ const VISITS_KEY = 'daily-bread.visits';
 const PRAYERS_KEY = 'daily-bread.prayers';
 const READ_KEY = 'daily-bread.read';
 
-const AI_API_CONFIG = {
-  endpoint: '/api/gemini'
-};
-
-let companionHistory = [];
-
 const byId = (id) => document.getElementById(id);
 
 function localDateKey(date = new Date()) {
@@ -245,85 +239,6 @@ function setupPrayerRoom() {
   });
 }
 
-function appendMessage(role, text, suggestedVerse = '') {
-  const messages = byId('chat-messages');
-  if (!messages) return;
-
-  const bubble = document.createElement('article');
-  bubble.className = `message ${role}`;
-  const paragraph = document.createElement('p');
-  paragraph.textContent = text;
-  bubble.append(paragraph);
-  if (suggestedVerse) {
-    const verse = document.createElement('p');
-    verse.className = 'suggested-verse';
-    verse.textContent = suggestedVerse;
-    bubble.append(verse);
-  }
-  messages.append(bubble);
-  messages.scrollTop = messages.scrollHeight;
-}
-
-async function getCompanionReply(message) {
-  let result;
-  try {
-    result = await fetch(AI_API_CONFIG.endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history: companionHistory })
-    });
-  } catch {
-    throw new Error('Could not reach the AI endpoint. Run this site with `vercel dev` or deploy it to Vercel.');
-  }
-  const data = await result.json().catch(() => ({}));
-  if (!result.ok) {
-    throw new Error(data.error || `AI request failed (${result.status}). Check the API route and GEMINI_API_KEY configuration.`);
-  }
-  if (typeof data.response_text !== 'string' || !data.response_text.trim()) {
-    throw new Error('Gemini returned an empty reply. Please try again.');
-  }
-
-  const reply = { response_text: data.response_text, suggested_verses: data.suggested_verses || [] };
-  companionHistory = [
-    ...companionHistory,
-    { role: 'user', text: message },
-    { role: 'model', text: reply.response_text }
-  ].slice(-8);
-  return reply;
-}
-
-function setupChat() {
-  const form = byId('chat-form');
-  if (!form) return;
-  const input = byId('chat-input');
-  const send = byId('send-message');
-
-  input.addEventListener('keydown', (event) => {
-    if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
-    event.preventDefault();
-    form.requestSubmit();
-  });
-
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const message = input.value.trim();
-    if (!message || send.disabled) return;
-
-    appendMessage('user', message);
-    input.value = '';
-    send.disabled = true;
-    try {
-      const reply = await getCompanionReply(message);
-      appendMessage('assistant', reply.response_text, (reply.suggested_verses || []).join('  ·  '));
-    } catch (error) {
-      appendMessage('assistant', error instanceof Error ? error.message : 'The AI companion could not respond. Check the API configuration and try again.');
-    } finally {
-      send.disabled = false;
-      input.focus();
-    }
-  });
-}
-
 function showLoadError() {
   const target = byId('data-error');
   if (target) target.hidden = false;
@@ -336,7 +251,6 @@ async function init() {
   setupPrayerRoom();
 
   const page = document.body.dataset.page;
-  if (page === 'chat') setupChat();
 
   try {
     const response = await fetch(DATA_URL);
@@ -347,9 +261,6 @@ async function init() {
     if (page === 'prayer') renderPrayerWall(data.prayers);
   } catch {
     showLoadError();
-    if (document.body.dataset.page === 'chat') {
-      appendMessage('assistant', 'I could not load the companion just now. Please refresh this page to try again.');
-    }
   }
 }
 

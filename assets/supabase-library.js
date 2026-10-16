@@ -23,8 +23,8 @@ function showListMessage(message) {
 function renderDocuments() {
   const filter = search.value.trim().toLowerCase();
   list.replaceChildren();
-  const matches = documents.filter((document) =>
-    `${document.title} ${document.author_name} ${document.description}`.toLowerCase().includes(filter)
+  const matches = documents.filter((journalDoc) =>
+    `${journalDoc.title} ${journalDoc.author_name} ${journalDoc.description}`.toLowerCase().includes(filter)
   );
 
   if (matches.length === 0) {
@@ -35,23 +35,23 @@ function renderDocuments() {
     return;
   }
 
-  matches.forEach((document) => {
+  matches.forEach((journalDoc) => {
     const article = document.createElement('article');
     article.className = 'journal-card';
     const details = document.createElement('div');
     details.className = 'journal-details';
     const title = document.createElement('h2');
-    title.textContent = document.title;
+    title.textContent = journalDoc.title;
     const description = document.createElement('p');
-    description.textContent = document.description || 'Shared devotional reading.';
+    description.textContent = journalDoc.description || 'Shared devotional reading.';
     const meta = document.createElement('p');
     meta.className = 'journal-meta';
-    meta.textContent = `${document.author_name} · ${document.file_name}`;
+    meta.textContent = `${journalDoc.author_name} · ${journalDoc.file_name}`;
     details.append(title, description, meta);
 
-    const { data } = supabase.storage.from('journals').getPublicUrl(document.storage_path);
-    const { data: downloadData } = supabase.storage.from('journals').getPublicUrl(document.storage_path, {
-      download: document.file_name
+    const { data } = supabase.storage.from('journals').getPublicUrl(journalDoc.storage_path);
+    const { data: downloadData } = supabase.storage.from('journals').getPublicUrl(journalDoc.storage_path, {
+      download: journalDoc.file_name
     });
     const actions = document.createElement('div');
     actions.className = 'journal-actions';
@@ -61,30 +61,30 @@ function renderDocuments() {
     view.target = '_blank';
     view.rel = 'noopener noreferrer';
     view.textContent = 'View PDF';
-    view.setAttribute('aria-label', `View ${document.title} PDF`);
+    view.setAttribute('aria-label', `View ${journalDoc.title} PDF`);
     const download = document.createElement('a');
     download.className = 'button-primary';
     download.href = downloadData.publicUrl;
-    download.download = document.file_name;
+    download.download = journalDoc.file_name;
     download.textContent = 'Download';
-    download.setAttribute('aria-label', `Download ${document.title} PDF`);
+    download.setAttribute('aria-label', `Download ${journalDoc.title} PDF`);
     const share = createShareControl({
-      title: `${document.title} | Daily Bread Journal Library`,
-      text: document.description || `A journal shared by ${document.author_name}.`,
+      title: `${journalDoc.title} | Daily Bread Journal Library`,
+      text: journalDoc.description || `A journal shared by ${journalDoc.author_name}.`,
       url: data.publicUrl,
       label: 'Share journal'
     });
     actions.append(view, download, share);
-    if (currentUser?.id === document.user_id) {
+    if (currentUser?.id === journalDoc.user_id) {
       const edit = document.createElement('button');
       edit.className = 'button-secondary';
       edit.type = 'button';
       edit.textContent = 'Edit details';
-      edit.setAttribute('aria-label', `Edit ${document.title} details`);
+      edit.setAttribute('aria-label', `Edit ${journalDoc.title} details`);
       edit.addEventListener('click', async () => {
-        const title = window.prompt('Journal title:', document.title);
+        const title = window.prompt('Journal title:', journalDoc.title);
         if (title === null) return;
-        const description = window.prompt('Journal description:', document.description || '');
+        const description = window.prompt('Journal description:', journalDoc.description || '');
         if (description === null) return;
         const cleanTitle = title.trim();
         const cleanDescription = description.trim();
@@ -98,7 +98,7 @@ function renderDocuments() {
             title: cleanTitle,
             description: cleanDescription,
             author_name: currentUser.user_metadata?.display_name || 'Community member'
-          }).eq('id', document.id).eq('user_id', currentUser.id);
+          }).eq('id', journalDoc.id).eq('user_id', currentUser.id);
           if (error) throw error;
           await loadDocuments();
           setStatus('Journal details updated.');
@@ -112,15 +112,15 @@ function renderDocuments() {
       remove.className = 'button-secondary';
       remove.type = 'button';
       remove.textContent = 'Delete';
-      remove.setAttribute('aria-label', `Delete ${document.title}`);
+      remove.setAttribute('aria-label', `Delete ${journalDoc.title}`);
       remove.addEventListener('click', async () => {
-        if (!window.confirm(`Delete "${document.title}" from the journal library?`)) return;
+        if (!window.confirm(`Delete "${journalDoc.title}" from the journal library?`)) return;
         remove.disabled = true;
         try {
           const { error: rowError } = await supabase.from('journals').delete()
-            .eq('id', document.id).eq('user_id', currentUser.id);
+            .eq('id', journalDoc.id).eq('user_id', currentUser.id);
           if (rowError) throw rowError;
-          const { error: fileError } = await supabase.storage.from('journals').remove([document.storage_path]);
+          const { error: fileError } = await supabase.storage.from('journals').remove([journalDoc.storage_path]);
           if (fileError) console.error('Journal record deleted but its PDF could not be removed:', fileError);
           await loadDocuments();
           setStatus(fileError ? 'Journal removed; its PDF could not be removed from storage.' : 'Journal deleted.');
@@ -180,6 +180,7 @@ async function initializeLibrary() {
   function updateUserControls(user) {
     currentUser = user || null;
     form.hidden = !currentUser;
+    if (documents.length) renderDocuments();
     document.getElementById('upload-sign-in-note').hidden = Boolean(currentUser);
     document.getElementById('library-account-link').textContent = currentUser ? 'Your account' : 'Sign in to upload';
     document.getElementById('library-account-link').href = currentUser ? './account.html' : './sign-in.html';
