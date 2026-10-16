@@ -65,12 +65,28 @@ export default async function handler(request, response) {
     });
 
     if (!mailResponse.ok) {
-      console.error('Suggestion email provider failed:', mailResponse.status, await mailResponse.text());
-      return response.status(502).json({ error: 'The email could not be delivered right now. Please try again later.' });
+      const providerError = await mailResponse.json().catch(() => ({}));
+      console.error('Suggestion email provider rejected the request:', {
+        status: mailResponse.status,
+        name: providerError.name,
+        message: providerError.message
+      });
+
+      const deliveryErrors = {
+        401: 'Resend rejected the API key. Check RESEND_API_KEY in Vercel and redeploy.',
+        403: 'Resend denied this send. Verify the sender domain in Resend and check whether your account can email this recipient.',
+        422: 'Resend rejected the sender or recipient. Check SUGGESTION_FROM_EMAIL and ADMIN_EMAILS; the sender domain must be verified.',
+        429: 'Resend rate limit reached. Wait a little and try again.'
+      };
+      const errorMessage = deliveryErrors[mailResponse.status]
+        || (mailResponse.status >= 500
+          ? 'Resend is temporarily unavailable. Try again later.'
+          : `Resend rejected the email (HTTP ${mailResponse.status}). Check your sender and recipient settings.`);
+      return response.status(502).json({ error: errorMessage });
     }
     return response.status(200).json({ sent: true });
   } catch (error) {
-    console.error('Suggestion email request failed:', error);
-    return response.status(502).json({ error: 'The email could not be delivered right now. Please try again later.' });
+    console.error('Suggestion email request failed:', error.message || error.name);
+    return response.status(502).json({ error: 'Could not reach Resend to deliver your suggestion. Check the Vercel function logs or try again later.' });
   }
 }

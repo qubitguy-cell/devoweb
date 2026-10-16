@@ -78,7 +78,7 @@ The content editor appends devotional readings and prayer prompts to `assets/dat
 
 Scripture reference lookups use the public-domain World English Bible via bible-api.com. Keyword search and search history use local content and browser storage.
 
-Help-page suggestions are emailed privately to the addresses in `ADMIN_EMAILS`; they are not posted to GitHub. Configure `RESEND_API_KEY` and `SUGGESTION_FROM_EMAIL` in Vercel. The sender address must be verified with Resend. Keep the API key server-only, then redeploy after adding or changing these variables.
+Help-page suggestions are emailed privately to the addresses in `ADMIN_EMAILS`; they are not posted to GitHub. Configure `RESEND_API_KEY` and `SUGGESTION_FROM_EMAIL` in Vercel. Verify the sender domain in Resend before sending; on Resend's restricted test account, the recipient may also need to be the account owner. Keep the API key server-only, then redeploy after adding or changing these variables. The Help form reports distinct guidance for API-key, sender/recipient, permission, and rate-limit errors.
 
 ## Journal library rules
 
