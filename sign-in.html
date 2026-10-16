@@ -56,7 +56,10 @@
           </div>
           <div class="form-field">
             <label for="auth-password">Password</label>
-            <input id="auth-password" name="password" type="password" minlength="6" autocomplete="current-password" required placeholder="At least 6 characters">
+            <div class="password-input-wrap">
+              <input id="auth-password" name="password" type="password" minlength="6" autocomplete="current-password" required placeholder="At least 6 characters">
+              <button class="icon-button password-toggle" id="password-toggle" type="button" aria-label="Show password" title="Show password" aria-pressed="false"><i class="bi bi-eye" aria-hidden="true"></i></button>
+            </div>
           </div>
           <button class="button-primary auth-submit" id="auth-submit" type="submit">Sign in</button>
         </form>

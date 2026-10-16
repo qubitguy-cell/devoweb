@@ -37,10 +37,18 @@
       <article class="help-section"><h2>Account & notifications</h2><p>Edit your profile, photo, email, or scholar listing from Account. Notifications link directly to private counseling rooms; unread counts clear when the inbox or relevant room is opened.</p></article>
     </section>
     <section class="suggestion-section" aria-labelledby="suggestion-title">
-      <div><p class="eyebrow">Your feedback</p><h2 id="suggestion-title">Suggest an update</h2><p>Report a problem or describe a feature that would help. Suggestions open as GitHub issues for the site maintainers.</p></div>
-      <a class="button-primary" href="https://github.com/qubitguy-cell/devoweb/issues/new?title=Daily%20Bread%20suggestion" target="_blank" rel="noopener noreferrer"><i class="bi bi-chat-square-text" aria-hidden="true"></i> Send a suggestion</a>
+      <div><p class="eyebrow">Your feedback</p><h2 id="suggestion-title">Suggest an update</h2><p>Send a private note directly to the Daily Bread administrators. Your feedback will not be posted to GitHub.</p></div>
+      <form class="suggestion-form" id="suggestion-form">
+        <label class="form-field" for="suggestion-topic">Topic<input id="suggestion-topic" name="topic" maxlength="100" placeholder="A feature idea or problem" required></label>
+        <label class="form-field" for="suggestion-email">Email for a reply <span>(optional)</span><input id="suggestion-email" name="email" type="email" maxlength="254" autocomplete="email" placeholder="you@example.com"></label>
+        <label class="form-field" for="suggestion-message">Your suggestion<textarea id="suggestion-message" name="message" maxlength="4000" rows="5" placeholder="Describe your suggestion or what went wrong..." required></textarea></label>
+        <label class="suggestion-trap" aria-hidden="true">Leave this field empty<input name="website" tabindex="-1" autocomplete="off"></label>
+        <button class="button-primary" id="suggestion-submit" type="submit"><i class="bi bi-envelope" aria-hidden="true"></i> Email the admins</button>
+        <p class="auth-status" id="suggestion-status" role="status" aria-live="polite"></p>
+      </form>
     </section>
   </main>
   <footer class="page-footer"><div class="footer-inner">Thank you for helping shape the community.</div></footer>
+  <script type="module" src="./assets/help.js"></script>
 </body>
 </html>

@@ -7,6 +7,7 @@ const nameField = document.getElementById('display-name-field');
 const nameInput = document.getElementById('display-name');
 const emailInput = document.getElementById('auth-email');
 const passwordInput = document.getElementById('auth-password');
+const passwordToggle = document.getElementById('password-toggle');
 const modeInputs = [...document.querySelectorAll('input[name="auth-mode"]')];
 let mode = 'signin';
 
@@ -20,6 +21,7 @@ function updateMode() {
   const signup = mode === 'signup';
   nameField.hidden = !signup;
   nameInput.required = signup;
+  passwordInput.autocomplete = signup ? 'new-password' : 'current-password';
   submit.textContent = signup ? 'Create account' : 'Sign in';
   document.getElementById('auth-title').textContent = signup ? 'Make a little space.' : 'Welcome back.';
   setStatus('');
@@ -87,6 +89,15 @@ if (!hasSupabaseConfig) {
 
 modeInputs.forEach((input) => input.addEventListener('change', updateMode));
 updateMode();
+
+passwordToggle.addEventListener('click', () => {
+  const isVisible = passwordInput.type === 'text';
+  passwordInput.type = isVisible ? 'password' : 'text';
+  passwordToggle.setAttribute('aria-pressed', String(!isVisible));
+  passwordToggle.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
+  passwordToggle.title = isVisible ? 'Show password' : 'Hide password';
+  passwordToggle.innerHTML = `<i class="bi ${isVisible ? 'bi-eye' : 'bi-eye-slash'}" aria-hidden="true"></i>`;
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();

@@ -76,7 +76,9 @@ The content editor appends devotional readings and prayer prompts to `assets/dat
 - The Supabase server variables from account deletion setup are also used to validate the signed-in editor.
 - Branch protection that blocks direct content commits must be adjusted or publishing will fail.
 
-Scripture reference lookups use the public-domain World English Bible via bible-api.com. Keyword search and search history use local content and browser storage. Update suggestions open the repository’s GitHub Issues page.
+Scripture reference lookups use the public-domain World English Bible via bible-api.com. Keyword search and search history use local content and browser storage.
+
+Help-page suggestions are emailed privately to the addresses in `ADMIN_EMAILS`; they are not posted to GitHub. Configure `RESEND_API_KEY` and `SUGGESTION_FROM_EMAIL` in Vercel. The sender address must be verified with Resend. Keep the API key server-only, then redeploy after adding or changing these variables.
 
 ## Journal library rules
 
