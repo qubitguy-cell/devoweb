@@ -37,6 +37,7 @@ if (menu) {
   const menuLinks = [
     { href: './counsel.html', icon: 'bi-chat-square-heart', label: 'Counsel & advice' },
     { href: './notifications.html', icon: 'bi-bell', label: 'Notifications' },
+    { href: './admin.html', icon: 'bi-database-gear', label: 'Content editor' },
     { href: './help.html', icon: 'bi-question-circle', label: 'Help & suggestions' }
   ];
   for (const item of menuLinks) {
@@ -48,25 +49,6 @@ if (menu) {
     if (communityLink) communityLink.after(link);
     else menu.append(link);
   }
-}
-
-function updateAdminLink(session) {
-  const existing = menu?.querySelector('a[href$="admin.html"]');
-  if (!session?.user || !menu) {
-    existing?.remove();
-    return;
-  }
-  fetch('/api/content-admin', { headers: { Authorization: `Bearer ${session.access_token}` } })
-    .then((result) => result.ok ? result.json() : null)
-    .then((result) => {
-      if (!result?.authorized || menu.querySelector('a[href$="admin.html"]')) return;
-      const link = document.createElement('a');
-      link.className = 'nav-link';
-      link.href = './admin.html';
-      link.innerHTML = '<i class="bi bi-database-gear" aria-hidden="true"></i><span>Content editor</span>';
-      menu.append(link);
-    })
-    .catch(() => {});
 }
 
 let notificationChannel = null;
@@ -257,7 +239,6 @@ async function syncAuthState() {
 
     const { data: { session } } = await supabase.auth.getSession();
     updateSignedInLabel(session?.user);
-    updateAdminLink(session);
     notificationUserId = session?.user?.id || null;
     if (notificationChannel) await supabase.removeChannel(notificationChannel);
     notificationChannel = null;
@@ -286,7 +267,6 @@ async function syncAuthState() {
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
         updateSignedInLabel(session?.user);
-        updateAdminLink(session);
         if (event === 'SIGNED_OUT') {
           notificationUserId = null;
           showUnreadCount(0);
@@ -313,7 +293,6 @@ async function syncAuthState() {
     });
   } catch {
     updateSignedInLabel(null);
-    updateAdminLink(null);
   }
 }
 

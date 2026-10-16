@@ -47,6 +47,7 @@ function nextDestination() {
   if (next === 'community') return './community.html';
   if (next === 'account') return './account.html';
   if (next === 'counsel') return './counsel.html';
+  if (next === 'admin') return './admin.html';
   if (next === 'counsel-room') {
     const requestId = params.get('request');
     if (requestId && /^[0-9a-f-]{36}$/i.test(requestId)) {
