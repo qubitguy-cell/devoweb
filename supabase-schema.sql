@@ -39,6 +39,47 @@ create table if not exists public.counsel_requests (
 
 alter table public.counsel_requests enable row level security;
 
+create index if not exists counsel_requests_requester_created_idx
+  on public.counsel_requests (requester_id, created_at desc);
+create index if not exists counsel_requests_scholar_created_idx
+  on public.counsel_requests (scholar_id, created_at desc);
+
+create table if not exists public.counsel_messages (
+  id uuid primary key default gen_random_uuid(),
+  request_id uuid not null references public.counsel_requests (id) on delete cascade,
+  sender_id uuid not null references auth.users (id) on delete cascade,
+  message text not null check (char_length(message) between 1 and 4000),
+  created_at timestamptz not null default now()
+);
+
+alter table public.counsel_messages enable row level security;
+
+create index if not exists counsel_messages_request_created_idx
+  on public.counsel_messages (request_id, created_at);
+
+drop policy if exists "Counseling participants can read thread messages" on public.counsel_messages;
+create policy "Counseling participants can read thread messages"
+  on public.counsel_messages for select to authenticated
+  using (
+    exists (
+      select 1 from public.counsel_requests r
+      where r.id = request_id
+        and (auth.uid() = r.requester_id or auth.uid() = r.scholar_id)
+    )
+  );
+
+drop policy if exists "Counseling participants can send thread messages" on public.counsel_messages;
+create policy "Counseling participants can send thread messages"
+  on public.counsel_messages for insert to authenticated
+  with check (
+    auth.uid() = sender_id
+    and exists (
+      select 1 from public.counsel_requests r
+      where r.id = request_id
+        and (auth.uid() = r.requester_id or auth.uid() = r.scholar_id)
+    )
+  );
+
 drop policy if exists "Requesters and scholars can read counseling requests" on public.counsel_requests;
 create policy "Requesters and scholars can read counseling requests"
   on public.counsel_requests for select to authenticated
@@ -62,6 +103,13 @@ create table if not exists public.notifications (
 
 alter table public.notifications enable row level security;
 
+create index if not exists notifications_unread_recipient_idx
+  on public.notifications (recipient_id) where read_at is null;
+
+alter table public.notifications drop constraint if exists notifications_kind_check;
+alter table public.notifications add constraint notifications_kind_check
+  check (kind in ('counsel_request', 'counsel_reply'));
+
 drop policy if exists "Members can read their own notifications" on public.notifications;
 create policy "Members can read their own notifications"
   on public.notifications for select to authenticated
@@ -74,14 +122,19 @@ create policy "Members can mark their own notifications read"
   with check (auth.uid() = recipient_id);
 
 drop policy if exists "Requesters can notify the selected scholar" on public.notifications;
-create policy "Requesters can notify the selected scholar"
+drop policy if exists "Participants can notify about counseling activity" on public.notifications;
+create policy "Participants can notify about counseling activity"
   on public.notifications for insert to authenticated
   with check (
     auth.uid() = sender_id
-    and kind = 'counsel_request'
     and exists (
       select 1 from public.counsel_requests r
-      where r.id = request_id and r.requester_id = auth.uid() and r.scholar_id = recipient_id
+      where r.id = request_id
+        and (
+          (kind = 'counsel_request' and r.requester_id = auth.uid() and r.scholar_id = recipient_id)
+          or (kind = 'counsel_reply' and auth.uid() in (r.requester_id, r.scholar_id)
+            and recipient_id in (r.requester_id, r.scholar_id) and recipient_id <> auth.uid())
+        )
     )
   );
 
@@ -180,6 +233,18 @@ begin
       and tablename = 'community_messages'
   ) then
     alter publication supabase_realtime add table public.community_messages;
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'counsel_messages'
+  ) then
+    alter publication supabase_realtime add table public.counsel_messages;
   end if;
 end $$;
 

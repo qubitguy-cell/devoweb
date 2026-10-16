@@ -1,6 +1,6 @@
 # Daily Bread
 
-Daily Bread is a static devotional web app for quiet reading, prayer, community conversation, and journaling. It combines a local content layer with optional Vercel Gemini AI and Supabase-powered account, chat, and file-sharing features.
+Daily Bread is a devotional web app for scripture study, prayer, community conversation, and journaling, with Supabase-powered accounts and file sharing.
 
 ## Overview
 
@@ -8,7 +8,9 @@ This project keeps the experience lightweight and deployable on a static host su
 
 - `index.html`: daily devotional reading, date tracking, and reading streaks
 - `prayer-room.html`: prayer prompts, breathing guidance, and personal prayer archive
-- `chat.html`: AI companion experience using `/api/gemini`
+- `scripture-study.html`: Bible reference lookup, local devotional search, and browser-local search history
+- `help.html`: navigation guide and update suggestions
+- `admin.html`: authorized editor for content stored in `assets/database.json`
 - `sign-in.html`: email/password sign-in, sign-up, and password reset
 - `account.html`: authenticated profile details and editable community identity
 - `community.html`: authenticated community chat using Supabase Realtime
@@ -21,11 +23,12 @@ Daily content is stored in `assets/database.json`. Reading progress, prayer note
 - Wallpaper mode with a blurred, readability-shaded background, dark mode, and white mode
 - Daily devotionals and verse-based reading flow
 - Prayer room with breathing cue and saved prayer entries
-- Gemini AI companion with a server-side API key
+- Scripture passage lookup and local devotional search
 - Supabase login flow with email authentication
 - Account profile with editable email, display name, uploaded avatar, short bio, scholar listing, and sign-in dates
 - Community chat for signed-in members
 - Counseling directory, private requests, and notifications
+- Private counseling conversation rooms with participant-only replies and unread reply notifications
 - Journal library for public PDF viewing, authenticated uploads, and owner editing/deletion
 
 ## Deployment and local development
@@ -36,15 +39,6 @@ This project is designed for static hosting, but some features require HTTP acce
 2. Run `vercel dev` from the project root for local testing.
 3. Open the site via `http://localhost:3000` or a deployed Vercel URL.
 4. Do not open the site only through `file://`; browser fetches and serverless routes will not work properly.
-
-## Gemini setup
-
-1. Create a Gemini API key in Google AI Studio.
-2. In Vercel, add `GEMINI_API_KEY` as an environment variable for the project.
-3. Optionally set `GEMINI_MODEL`; the default is `gemini-2.5-flash`.
-4. Redeploy after changing environment variables.
-
-The browser calls `/api/gemini`, so the API key stays server-side. The companion requires this route and does not substitute scripted replies if the key or Gemini service is unavailable. Run the app through `vercel dev` locally and set `GEMINI_API_KEY` in the Vercel environment.
 
 ## Supabase setup
 
@@ -61,13 +55,28 @@ The schema creates:
 - public Storage bucket for PDFs
 - Row-level security policies
 - Realtime support for community messages
+- Realtime support for private counseling replies
 - Owner-only deletion policies for community messages, published journals, journal PDFs, and notifications
 - Participant-only deletion policy for private counseling requests
+- Participant-only access policies for private counseling messages
+- Participant-only counseling message table, reply notifications, and conversation indexes
 - Owner-only update policies for community messages and published journal details
 
 Email/password sign-up, sign-in, and password reset live in `sign-in.html`.
 
 For account deletion on Vercel, configure `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` as server environment variables. The service-role key is used only by `/api/delete-account` and must never be added to browser code. Redeploy after adding the variables. Users can edit their display name, profile, scholar listing, avatar, and email from Account; Supabase may require email confirmation. Private prayer entries are stored in the browser and can be individually deleted there.
+
+## Content editor
+
+The content editor appends devotional readings and prayer prompts to `assets/database.json` through the GitHub Contents API.
+
+- Configure `ADMIN_EMAILS` in Vercel with a comma-separated list of authorized Supabase account email addresses.
+- Configure `GITHUB_CONTENT_TOKEN` as a server-only fine-grained GitHub token with **Contents: Read and write** access to this repository.
+- Optionally configure `GITHUB_REPOSITORY` (defaults to `qubitguy-cell/devoweb`) and `GITHUB_BRANCH` (defaults to `main`).
+- The Supabase server variables from account deletion setup are also used to validate the signed-in editor.
+- Branch protection that blocks direct content commits must be adjusted or publishing will fail.
+
+Scripture reference lookups use the public-domain World English Bible via bible-api.com. Keyword search and search history use local content and browser storage. Update suggestions open the repository’s GitHub Issues page.
 
 ## Journal library rules
 

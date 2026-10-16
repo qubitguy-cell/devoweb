@@ -41,6 +41,21 @@ function readableError(error) {
   return messages[error.message] || error.message || 'The request failed. Check your Supabase settings and try again.';
 }
 
+function nextDestination() {
+  const params = new URLSearchParams(location.search);
+  const next = params.get('next');
+  if (next === 'community') return './community.html';
+  if (next === 'account') return './account.html';
+  if (next === 'counsel') return './counsel.html';
+  if (next === 'counsel-room') {
+    const requestId = params.get('request');
+    if (requestId && /^[0-9a-f-]{36}$/i.test(requestId)) {
+      return `./counsel-room.html?request=${encodeURIComponent(requestId)}`;
+    }
+  }
+  return null;
+}
+
 if (!form) throw new Error('Authentication form is missing.');
 
 if (!hasSupabaseConfig) {
@@ -51,9 +66,8 @@ if (!hasSupabaseConfig) {
   const { data, error } = await supabase.auth.getSession();
   if (error) setStatus(error.message, true);
   if (data.session?.user) {
-    const next = new URLSearchParams(location.search).get('next');
-    if (next === 'community') location.replace('./community.html');
-    else if (next === 'account') location.replace('./account.html');
+    const destination = nextDestination();
+    if (destination) location.replace(destination);
     else displaySignedIn(data.session.user);
   }
 
@@ -63,9 +77,8 @@ if (!hasSupabaseConfig) {
       document.getElementById('auth-panel').hidden = false;
     }
     if (session?.user && event === 'SIGNED_IN') {
-      const next = new URLSearchParams(location.search).get('next');
-      if (next === 'community') location.replace('./community.html');
-      else if (next === 'account') location.replace('./account.html');
+      const destination = nextDestination();
+      if (destination) location.replace(destination);
       else displaySignedIn(session.user);
     }
   });
@@ -103,8 +116,7 @@ form.addEventListener('submit', async (event) => {
   }
 
   if (mode === 'signin') {
-    const next = new URLSearchParams(location.search).get('next');
-    location.replace(next === 'community' ? './community.html' : next === 'account' ? './account.html' : './index.html');
+    location.replace(nextDestination() || './index.html');
     return;
   }
 

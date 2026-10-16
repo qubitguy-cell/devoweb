@@ -12,7 +12,9 @@ function renderNotification(notification, request = null) {
   const article = document.createElement('article');
   article.className = 'notification-entry';
   const title = document.createElement('h2');
-  title.textContent = notification.kind === 'counsel_request' ? 'Counseling request' : 'Notification';
+  title.textContent = notification.kind === 'counsel_request'
+    ? 'Counseling request'
+    : notification.kind === 'counsel_reply' ? 'Counseling reply' : 'Notification';
   const message = document.createElement('p');
   message.textContent = notification.message;
   const date = document.createElement('time');
@@ -28,6 +30,12 @@ function renderNotification(notification, request = null) {
     requestMessage.textContent = request.message;
     requestMessage.className = 'notification-request-message';
     article.append(subject, requestMessage);
+
+    const openRoom = document.createElement('a');
+    openRoom.className = 'button-primary notification-open-room';
+    openRoom.href = `./counsel-room.html?request=${encodeURIComponent(request.id)}`;
+    openRoom.innerHTML = '<i class="bi bi-chat-left-text" aria-hidden="true"></i> Open private reply room';
+    article.append(openRoom);
 
     const deleteRequest = document.createElement('button');
     deleteRequest.className = 'button-secondary notification-delete-request';

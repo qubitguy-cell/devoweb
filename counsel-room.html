@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111210">
+  <meta name="description" content="A private conversation between a community member and their selected guide.">
+  <title>Private Counseling Room | Daily Bread</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="./assets/styles.css">
+  <script src="./assets/site-ui.js" defer></script>
+  <script type="module" src="./assets/counsel-room.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./index.html" aria-label="Daily Bread home"><span class="brand-mark" aria-hidden="true"></span>Daily Bread</a>
+      <button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation" title="Open navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <nav class="main-nav" id="site-menu" aria-label="Main navigation" hidden>
+        <a class="nav-link" href="./index.html"><i class="bi bi-house-door"></i><span>Today</span></a>
+        <a class="nav-link" href="./prayer-room.html"><i class="bi bi-flower1"></i><span>Prayer room</span></a>
+        <a class="nav-link" href="./scripture-study.html"><i class="bi bi-search"></i><span>Scripture study</span></a>
+        <a class="nav-link" href="./community.html"><i class="bi bi-people"></i><span>Community</span></a>
+        <a class="nav-link" href="./counsel.html" aria-current="page"><i class="bi bi-chat-square-heart"></i><span>Counsel & advice</span></a>
+        <a class="nav-link" href="./notifications.html"><i class="bi bi-bell"></i><span>Notifications</span></a>
+        <a class="nav-link" href="./library.html"><i class="bi bi-journal-bookmark"></i><span>Journal library</span></a>
+        <a class="nav-link" href="./account.html"><i class="bi bi-person-check"></i><span>Account</span></a>
+      </nav>
+      <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="Switch appearance" title="Switch appearance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg></button>
+    </div>
+  </header>
+  <main class="page-shell counsel-room-shell">
+    <a class="room-back-link" href="./counsel.html"><i class="bi bi-arrow-left" aria-hidden="true"></i> Counsel & advice</a>
+    <header class="profile-heading counsel-room-heading">
+      <p class="eyebrow">Private conversation</p>
+      <h1 class="page-title" id="room-subject">Counseling room</h1>
+      <p class="page-intro" id="room-participant">Only the person who asked and their selected guide can read this conversation.</p>
+    </header>
+    <section class="room-context" aria-labelledby="original-request-title">
+      <p class="section-label" id="original-request-title">Original request</p>
+      <p id="room-original-message">Loading the request...</p>
+      <time id="room-request-date"></time>
+    </section>
+    <p class="community-status" id="room-status" role="status" aria-live="polite">Opening private room...</p>
+    <section class="counsel-thread" id="counsel-thread" aria-label="Private counseling messages" aria-live="polite"></section>
+    <form class="counsel-reply-form" id="counsel-reply-form">
+      <label for="room-reply" hidden>Write a private reply</label>
+      <textarea id="room-reply" maxlength="4000" rows="3" placeholder="Write a thoughtful reply..." required></textarea>
+      <button class="button-primary" id="room-send" type="submit"><i class="bi bi-send" aria-hidden="true"></i> Send reply</button>
+    </form>
+    <p class="community-setup-note">This is a private peer guidance space, not emergency or professional mental health care. Share only what feels appropriate.</p>
+  </main>
+  <footer class="page-footer"><div class="footer-inner">Listen carefully. Respond with care.</div></footer>
+</body>
+</html>
