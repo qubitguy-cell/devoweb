@@ -1,4 +1,4 @@
-import { hasSupabaseConfig, supabase } from './supabase-client.js';
+import { createShareControl } from './share.js';
 
 const status = document.getElementById('library-status');
 const form = document.getElementById('pdf-upload-form');
@@ -6,10 +6,18 @@ const list = document.getElementById('journal-list');
 const search = document.getElementById('journal-search');
 let documents = [];
 let currentUser = null;
+let supabase = null;
 
 function setStatus(message, error = false) {
   status.textContent = message;
   status.classList.toggle('is-error', error);
+}
+
+function showListMessage(message) {
+  const empty = document.createElement('p');
+  empty.className = 'library-empty';
+  empty.textContent = message;
+  list.replaceChildren(empty);
 }
 
 function renderDocuments() {
@@ -60,52 +68,142 @@ function renderDocuments() {
     download.download = document.file_name;
     download.textContent = 'Download';
     download.setAttribute('aria-label', `Download ${document.title} PDF`);
-    actions.append(view, download);
+    const share = createShareControl({
+      title: `${document.title} | Daily Bread Journal Library`,
+      text: document.description || `A journal shared by ${document.author_name}.`,
+      url: data.publicUrl,
+      label: 'Share journal'
+    });
+    actions.append(view, download, share);
+    if (currentUser?.id === document.user_id) {
+      const edit = document.createElement('button');
+      edit.className = 'button-secondary';
+      edit.type = 'button';
+      edit.textContent = 'Edit details';
+      edit.setAttribute('aria-label', `Edit ${document.title} details`);
+      edit.addEventListener('click', async () => {
+        const title = window.prompt('Journal title:', document.title);
+        if (title === null) return;
+        const description = window.prompt('Journal description:', document.description || '');
+        if (description === null) return;
+        const cleanTitle = title.trim();
+        const cleanDescription = description.trim();
+        if (!cleanTitle || cleanTitle.length > 100 || cleanDescription.length > 300) {
+          setStatus('Use a title of 1 to 100 characters and a description up to 300 characters.', true);
+          return;
+        }
+        edit.disabled = true;
+        try {
+          const { error } = await supabase.from('journals').update({
+            title: cleanTitle,
+            description: cleanDescription,
+            author_name: currentUser.user_metadata?.display_name || 'Community member'
+          }).eq('id', document.id).eq('user_id', currentUser.id);
+          if (error) throw error;
+          await loadDocuments();
+          setStatus('Journal details updated.');
+        } catch (error) {
+          console.error('Could not update journal details:', error);
+          setStatus(error.message || 'Could not update this journal.', true);
+          edit.disabled = false;
+        }
+      });
+      const remove = document.createElement('button');
+      remove.className = 'button-secondary';
+      remove.type = 'button';
+      remove.textContent = 'Delete';
+      remove.setAttribute('aria-label', `Delete ${document.title}`);
+      remove.addEventListener('click', async () => {
+        if (!window.confirm(`Delete "${document.title}" from the journal library?`)) return;
+        remove.disabled = true;
+        try {
+          const { error: rowError } = await supabase.from('journals').delete()
+            .eq('id', document.id).eq('user_id', currentUser.id);
+          if (rowError) throw rowError;
+          const { error: fileError } = await supabase.storage.from('journals').remove([document.storage_path]);
+          if (fileError) console.error('Journal record deleted but its PDF could not be removed:', fileError);
+          await loadDocuments();
+          setStatus(fileError ? 'Journal removed; its PDF could not be removed from storage.' : 'Journal deleted.');
+        } catch (error) {
+          console.error('Could not delete journal:', error);
+          setStatus(error.message || 'Could not delete this journal.', true);
+          remove.disabled = false;
+        }
+      });
+      actions.append(edit, remove);
+    }
     article.append(details, actions);
     list.append(article);
   });
 }
 
 async function loadDocuments() {
-  const { data, error } = await supabase
-    .from('journals')
-    .select('id,title,description,author_name,file_name,storage_path,file_size,created_at')
-    .order('created_at', { ascending: false })
-    .limit(100);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
-  if (error) {
+  try {
+    const { data, error } = await supabase
+      .from('journals')
+      .select('id,user_id,title,description,author_name,file_name,storage_path,file_size,created_at')
+      .order('created_at', { ascending: false })
+      .limit(100)
+      .abortSignal(controller.signal);
+
+    if (error) throw error;
+
+    documents = data || [];
+    renderDocuments();
+    setStatus(`${documents.length} ${documents.length === 1 ? 'journal' : 'journals'} shared`);
+  } catch (error) {
     console.error('Journal list unavailable:', error);
-    setStatus('Could not load the journal library. Run supabase-schema.sql and check the RLS policies.', true);
-    return;
+    const detail = error.name === 'AbortError'
+      ? 'The request timed out. Check your connection and Supabase project status.'
+      : error.message || 'Check that supabase-schema.sql has been run and the journals table is available.';
+    setStatus(`Could not load the journal library. ${detail}`, true);
+    showListMessage('Journal entries could not be loaded.');
+  } finally {
+    clearTimeout(timeout);
   }
-
-  documents = data;
-  renderDocuments();
-  setStatus(`${documents.length} ${documents.length === 1 ? 'journal' : 'journals'} shared`);
 }
 
-if (!hasSupabaseConfig) {
-  setStatus('Add your Supabase project URL and publishable key in assets/supabase-config.js to enable the library.', true);
-  form.hidden = true;
-} else {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) setStatus(error.message, true);
-  currentUser = data.session?.user || null;
-  form.hidden = !currentUser;
-  document.getElementById('upload-sign-in-note').hidden = Boolean(currentUser);
-  document.getElementById('library-account-link').textContent = currentUser ? 'Your account' : 'Sign in to upload';
-  document.getElementById('library-account-link').href = currentUser ? './account.html' : './sign-in.html';
+async function initializeLibrary() {
+  try {
+    const clientModule = await import('./supabase-client.js');
+    if (!clientModule.hasSupabaseConfig) {
+      setStatus('Add your Supabase project URL and publishable key in assets/supabase-config.js to enable the library.', true);
+      showListMessage('The journal library is not configured yet.');
+      form.hidden = true;
+      return;
+    }
 
-  supabase.auth.onAuthStateChange((_event, session) => {
-    currentUser = session?.user || null;
+    supabase = clientModule.supabase;
+  function updateUserControls(user) {
+    currentUser = user || null;
     form.hidden = !currentUser;
     document.getElementById('upload-sign-in-note').hidden = Boolean(currentUser);
     document.getElementById('library-account-link').textContent = currentUser ? 'Your account' : 'Sign in to upload';
     document.getElementById('library-account-link').href = currentUser ? './account.html' : './sign-in.html';
+  }
+
+  updateUserControls(null);
+  void loadDocuments();
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    updateUserControls(session?.user);
   });
 
-  await loadDocuments();
+  supabase.auth.getSession()
+    .then(({ data }) => updateUserControls(data.session?.user))
+    .catch((error) => console.error('Could not read the current sign-in state:', error));
+  } catch (error) {
+    console.error('Journal library initialization failed:', error);
+    setStatus('Could not initialize the journal library. Check your connection and Supabase configuration.', true);
+    showListMessage('The journal library could not be initialized.');
+    form.hidden = true;
+  }
 }
+
+void initializeLibrary();
 
 search.addEventListener('input', renderDocuments);
 

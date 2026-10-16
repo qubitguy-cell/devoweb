@@ -119,6 +119,14 @@ button, input, textarea, .main-nav, .home-hero, .devotional-aside, .journal-pane
 .brand { order: 0; }
 .theme-toggle { order: 1; }
 .menu-toggle { order: 2; }
+.account-avatar-button { order: 3; overflow: hidden; color: var(--ink); }
+.notification-button { order: 4; position: relative; color: var(--ink); }
+.notification-button > i { font-size: 18px; }
+.notification-badge { position: absolute; top: -5px; right: -5px; display: grid; min-width: 18px; height: 18px; padding-inline: 4px; place-items: center; border: 2px solid var(--page); border-radius: 999px; background: #c9503c; color: #fff; font-size: 10px; font-weight: 700; line-height: 1; }
+.notification-badge[hidden] { display: none; }
+.account-avatar-button img { width: 100%; height: 100%; object-fit: cover; }
+.account-avatar-button i { font-size: 19px; }
+.account-avatar-initial { display: grid; width: 100%; height: 100%; place-items: center; background: var(--surface-raised); color: var(--accent); font-size: 15px; font-weight: 600; }
 .icon-button { width: 40px; height: 40px; padding: 0; border-color: var(--line); border-radius: var(--radius-sm); background: var(--surface); color: var(--muted); }
 .icon-button svg { width: 18px; height: 18px; }
 .icon-button:hover { border-color: var(--accent-dark); color: var(--ink); }
@@ -202,6 +210,8 @@ button, input, textarea, .main-nav, .home-hero, .devotional-aside, .journal-pane
 .archive-entry { padding: 13px 0; border-bottom: 1px solid var(--line); animation: fade-up .45s ease both; }
 .archive-entry p { margin: 0; color: #c6c4be; font-size: 12px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
 .archive-entry time { display: block; margin-top: 6px; color: var(--quiet); font-size: 10px; }
+.archive-delete { margin-top: 8px; }
+.archive-edit { margin: 8px 8px 0 0; }
 .archive-empty { padding: 14px 0; color: var(--quiet); font-size: 12px; }
 .journal-input.is-releasing { animation: release-away .55s ease forwards; }
 
@@ -238,6 +248,16 @@ button, input, textarea, .main-nav, .home-hero, .devotional-aside, .journal-pane
 .journal-meta { margin: 8px 0 0; color: var(--quiet); font-size: 10px; overflow-wrap: anywhere; }
 .journal-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 7px; }
 .journal-actions .button-primary, .journal-actions .button-secondary { min-height: 36px; padding-inline: 10px; font-size: 11px; }
+.share-control { position: relative; display: inline-flex; }
+.share-trigger { min-height: 36px; padding-inline: 10px; font-size: 11px; list-style: none; }
+.share-trigger::-webkit-details-marker { display: none; }
+.share-menu { position: absolute; z-index: 10; top: calc(100% + 6px); right: 0; display: grid; min-width: 164px; padding: 5px; border: 1px solid var(--line-strong); background: var(--surface, #171815); box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+.share-menu a, .share-menu button { display: flex; align-items: center; gap: 9px; min-height: 36px; padding: 7px 9px; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 12px; text-align: left; text-decoration: none; cursor: pointer; }
+.share-menu a:hover, .share-menu button:hover { background: rgba(255,255,255,.07); }
+.share-menu i { width: 16px; text-align: center; }
+.scripture-line > .share-control { margin-top: 12px; }
+.prayer-item > .share-control, .archive-entry > .share-control { margin-top: 10px; }
+.scholar-entry > .share-control { margin-top: 8px; }
 .library-empty, .library-note { grid-column: 1 / -1; color: var(--quiet); font-size: 13px; }
 .library-note { margin: 22px 0; }
 .upload-panel { margin-top: 36px; padding: 25px; border: 1px solid var(--line); background: rgba(255,255,255,.025); }
@@ -283,6 +303,16 @@ button, input, textarea, .main-nav, .home-hero, .devotional-aside, .journal-pane
 .profile-avatar { display: grid; flex: 0 0 82px; width: 82px; aspect-ratio: 1; place-items: center; overflow: hidden; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface-raised); color: var(--accent); font: 500 34px/1 var(--serif); }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-section { min-width: 0; padding: 25px 0; border-bottom: 1px solid var(--line); }
+.account-danger-zone { grid-column: 1 / -1; }
+.account-danger-zone p { max-width: 620px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.button-danger { min-height: 42px; padding: 0 14px; border: 1px solid rgba(220,125,115,.5); background: rgba(142,55,48,.16); color: #e3a9a2; font: inherit; font-size: 12px; cursor: pointer; }
+.button-danger:hover { background: rgba(142,55,48,.28); }
+.button-danger:disabled { cursor: wait; opacity: .65; }
+.notification-delete { margin-top: 12px; }
+.notification-request-message { white-space: pre-wrap; overflow-wrap: anywhere; }
+.notification-delete-request { margin: 10px 8px 0 0; }
+.community-delete { margin: 5px 0 0 auto; font-size: 11px; }
+.community-edit { display: inline-block; margin: 5px 8px 0 0; font-size: 11px; }
 .profile-section h2 { margin: 0 0 18px; font: 500 21px/1.3 var(--serif); }
 .profile-facts { margin: 0; }
 .profile-facts > div { display: grid; grid-template-columns: minmax(100px, .7fr) minmax(0, 1.3fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }

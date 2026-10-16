@@ -8,6 +8,100 @@ create table if not exists public.community_messages (
 
 alter table public.community_messages enable row level security;
 
+create table if not exists public.scholar_profiles (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  display_name text not null check (char_length(display_name) between 1 and 60),
+  bio text not null default '' check (char_length(bio) <= 300),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.scholar_profiles enable row level security;
+
+create policy "Anyone can browse opted-in scholars"
+  on public.scholar_profiles for select to anon, authenticated
+  using (true);
+
+create policy "Scholars can manage their own listing"
+  on public.scholar_profiles for all to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table if not exists public.counsel_requests (
+  id uuid primary key default gen_random_uuid(),
+  requester_id uuid not null references auth.users (id) on delete cascade,
+  scholar_id uuid not null references public.scholar_profiles (user_id) on delete cascade,
+  subject text not null check (char_length(subject) between 1 and 120),
+  message text not null check (char_length(message) between 1 and 2000),
+  created_at timestamptz not null default now()
+);
+
+alter table public.counsel_requests enable row level security;
+
+create policy "Requesters and scholars can read counseling requests"
+  on public.counsel_requests for select to authenticated
+  using (auth.uid() = requester_id or auth.uid() = scholar_id);
+
+create policy "Members can send counseling requests"
+  on public.counsel_requests for insert to authenticated
+  with check (auth.uid() = requester_id and requester_id <> scholar_id);
+
+create table if not exists public.notifications (
+  id uuid primary key default gen_random_uuid(),
+  recipient_id uuid not null references auth.users (id) on delete cascade,
+  sender_id uuid references auth.users (id) on delete set null,
+  request_id uuid references public.counsel_requests (id) on delete cascade,
+  kind text not null check (kind in ('counsel_request')),
+  message text not null check (char_length(message) between 1 and 240),
+  read_at timestamptz,
+  created_at timestamptz not null default now()
+);
+
+alter table public.notifications enable row level security;
+
+create policy "Members can read their own notifications"
+  on public.notifications for select to authenticated
+  using (auth.uid() = recipient_id);
+
+create policy "Members can mark their own notifications read"
+  on public.notifications for update to authenticated
+  using (auth.uid() = recipient_id)
+  with check (auth.uid() = recipient_id);
+
+create policy "Requesters can notify the selected scholar"
+  on public.notifications for insert to authenticated
+  with check (
+    auth.uid() = sender_id
+    and kind = 'counsel_request'
+    and exists (
+      select 1 from public.counsel_requests r
+      where r.id = request_id and r.requester_id = auth.uid() and r.scholar_id = recipient_id
+    )
+  );
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('avatars', 'avatars', true, 3145728, array['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+on conflict (id) do update
+set public = excluded.public,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
+
+create policy "Anyone can read profile avatars"
+  on storage.objects for select to anon, authenticated
+  using (bucket_id = 'avatars');
+
+create policy "Members can upload avatars to their own folder"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy "Members can update avatars in their own folder"
+  on storage.objects for update to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text)
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy "Members can delete avatars in their own folder"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
 create policy "Signed-in members can read community messages"
   on public.community_messages for select to authenticated
   using (true);
@@ -71,3 +165,40 @@ begin
     alter publication supabase_realtime add table public.community_messages;
   end if;
 end $$;
+
+drop policy if exists "Members can update their own community messages" on public.community_messages;
+create policy "Members can update their own community messages"
+  on public.community_messages for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Members can delete their own community messages" on public.community_messages;
+create policy "Members can delete their own community messages"
+  on public.community_messages for delete to authenticated
+  using (auth.uid() = user_id);
+
+drop policy if exists "Members can delete their own journals" on public.journals;
+create policy "Members can delete their own journals"
+  on public.journals for delete to authenticated
+  using (auth.uid() = user_id);
+
+drop policy if exists "Members can update their own journals" on public.journals;
+create policy "Members can update their own journals"
+  on public.journals for update to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Members can delete their own journal PDFs" on storage.objects;
+create policy "Members can delete their own journal PDFs"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'journals' and (storage.foldername(name))[1] = auth.uid()::text);
+
+drop policy if exists "Members can delete their own notifications" on public.notifications;
+create policy "Members can delete their own notifications"
+  on public.notifications for delete to authenticated
+  using (auth.uid() = recipient_id);
+
+drop policy if exists "Counseling participants can delete their requests" on public.counsel_requests;
+create policy "Counseling participants can delete their requests"
+  on public.counsel_requests for delete to authenticated
+  using (auth.uid() = requester_id or auth.uid() = scholar_id);

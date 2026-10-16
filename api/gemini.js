@@ -4,9 +4,9 @@ export default async function handler(request, response) {
     return response.status(405).json({ error: 'Method not allowed.' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) {
-    return response.status(503).json({ error: 'Gemini is not configured yet.' });
+    return response.status(503).json({ error: 'GEMINI_API_KEY is not configured in the server environment.' });
   }
 
   const message = typeof request.body?.message === 'string' ? request.body.message.trim() : '';

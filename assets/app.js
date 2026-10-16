@@ -1,3 +1,5 @@
+import { createShareControl } from './share.js';
+
 const DATA_URL = './assets/database.json';
 const VISITS_KEY = 'daily-bread.visits';
 const PRAYERS_KEY = 'daily-bread.prayers';
@@ -81,6 +83,16 @@ function renderHome(devotional) {
     if (target) target.textContent = value;
   });
 
+  const scripture = byId('scripture-text')?.closest('.scripture-line');
+  const reference = byId('scripture-reference')?.textContent || '';
+  if (scripture && !scripture.querySelector('.share-control')) {
+    scripture.append(createShareControl({
+      title: `${devotional.reference} | Daily Bread`,
+      text: `${devotional.verse} ${devotional.reference}`,
+      label: 'Share scripture'
+    }));
+  }
+
   const readButton = byId('mark-read');
   if (!readButton) return;
 
@@ -122,7 +134,11 @@ function renderPrayerWall(prayers) {
     heading.append(category);
     const content = document.createElement('p');
     content.textContent = prayer.content;
-    article.append(heading, content);
+    article.append(heading, content, createShareControl({
+      title: `${prayer.title} | Daily Bread`,
+      text: prayer.content,
+      label: 'Share prayer'
+    }));
     wall.append(article);
   });
 }
@@ -152,7 +168,38 @@ function renderArchive() {
     const date = document.createElement('time');
     date.dateTime = entry.createdAt;
     date.textContent = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(entry.createdAt));
-    item.append(prayer, date);
+    const edit = document.createElement('button');
+    edit.className = 'button-secondary archive-edit';
+    edit.type = 'button';
+    edit.textContent = 'Edit';
+    edit.setAttribute('aria-label', 'Edit this prayer');
+    edit.addEventListener('click', () => {
+      const updatedText = window.prompt('Edit your private prayer:', entry.text);
+      if (updatedText === null) return;
+      const text = updatedText.trim();
+      if (!text || text.length > 4000) return;
+      const current = readStoredArray(PRAYERS_KEY);
+      current[entries.indexOf(entry)] = { ...entry, text };
+      localStorage.setItem(PRAYERS_KEY, JSON.stringify(current));
+      renderArchive();
+    });
+    const remove = document.createElement('button');
+    remove.className = 'button-secondary archive-delete';
+    remove.type = 'button';
+    remove.textContent = 'Delete';
+    remove.setAttribute('aria-label', 'Delete this prayer');
+    remove.addEventListener('click', () => {
+      if (!window.confirm('Delete this prayer from this device?')) return;
+      const current = readStoredArray(PRAYERS_KEY);
+      current.splice(entries.indexOf(entry), 1);
+      localStorage.setItem(PRAYERS_KEY, JSON.stringify(current));
+      renderArchive();
+    });
+    item.append(prayer, date, createShareControl({
+      title: 'A prayer from my Daily Bread journal',
+      text: entry.text,
+      label: 'Share this prayer'
+    }), edit, remove);
     list.append(item);
   });
 }

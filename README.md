@@ -23,9 +23,10 @@ Daily content is stored in `assets/database.json`. Reading progress, prayer note
 - Prayer room with breathing cue and saved prayer entries
 - Gemini AI companion with a server-side API key
 - Supabase login flow with email authentication
-- Account profile with display name, avatar URL, short bio, and sign-in dates
+- Account profile with editable email, display name, uploaded avatar, short bio, scholar listing, and sign-in dates
 - Community chat for signed-in members
-- Journal library for public PDF viewing and authenticated uploads
+- Counseling directory, private requests, and notifications
+- Journal library for public PDF viewing, authenticated uploads, and owner editing/deletion
 
 ## Deployment and local development
 
@@ -51,7 +52,8 @@ The browser calls `/api/gemini`, so the API key stays server-side. The companion
 2. In **Project Settings > API**, copy the Project URL and publishable key into `assets/supabase-config.js`.
 3. In **Authentication > Providers**, enable Email.
 4. In **Authentication > URL Configuration**, add your Vercel URL to the allowed redirect URLs.
-5. Open **SQL Editor** and paste/run `supabase-schema.sql`.
+5. For a new project, open **SQL Editor** and run `supabase-schema.sql` once.
+6. When updating an existing project, run only the new policy statements at the end of `supabase-schema.sql` (the block beginning with `drop policy if exists "Members can update their own community messages"`). Do not paste over or reset existing tables.
 
 The schema creates:
 
@@ -60,8 +62,13 @@ The schema creates:
 - public Storage bucket for PDFs
 - Row-level security policies
 - Realtime support for community messages
+- Owner-only deletion policies for community messages, published journals, journal PDFs, and notifications
+- Participant-only deletion policy for private counseling requests
+- Owner-only update policies for community messages and published journal details
 
 Email/password sign-up, sign-in, and password reset live in `sign-in.html`.
+
+For account deletion on Vercel, configure `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` as server environment variables. The service-role key is used only by `/api/delete-account` and must never be added to browser code. Redeploy after adding the variables. Users can edit their display name, profile, scholar listing, avatar, and email from Account; Supabase may require email confirmation. Private prayer entries are stored in the browser and can be individually deleted there.
 
 ## Journal library rules
 

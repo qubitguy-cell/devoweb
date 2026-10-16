@@ -47,11 +47,25 @@
       <form class="profile-section profile-form" id="profile-form">
         <h2>About you</h2>
         <label class="form-field" for="profile-name">Display name<input id="profile-name" name="display_name" type="text" maxlength="60" required autocomplete="nickname"></label>
-        <label class="form-field" for="profile-avatar-url">Avatar image URL<input id="profile-avatar-url" name="avatar_url" type="url" maxlength="500" placeholder="https://example.com/avatar.jpg" autocomplete="url"></label>
+        <label class="form-field" for="profile-email-edit">Email address<input id="profile-email-edit" name="email" type="email" required autocomplete="email"></label>
+        <label class="form-field" for="profile-avatar-file">Profile photo<input id="profile-avatar-file" name="avatar" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label>
+        <p class="profile-upload-note">JPEG, PNG, WebP, or GIF. Maximum 3 MB.</p>
+        <button class="text-button profile-avatar-remove" id="profile-avatar-remove" type="button" hidden>Remove profile photo</button>
         <label class="form-field" for="profile-bio">A little about you<textarea id="profile-bio" name="bio" maxlength="240" rows="3" placeholder="A few words you would like the community to know"></textarea></label>
+        <fieldset class="scholar-fields">
+          <legend>Community guidance</legend>
+          <label class="scholar-opt-in"><input id="profile-is-scholar" type="checkbox"> I am a Bible scholar or pastoral counselor and can receive advice requests</label>
+          <label class="form-field" for="profile-scholar-bio">Tradition, experience, or credentials<textarea id="profile-scholar-bio" maxlength="300" rows="3" placeholder="Describe your background so people can choose informed guidance"></textarea></label>
+          <p class="profile-upload-note">Scholar listings are self-described and are not verified by Daily Bread.</p>
+        </fieldset>
         <div class="account-actions"><button class="button-primary" id="profile-save" type="submit">Save profile</button><button class="button-secondary" id="profile-sign-out" type="button">Sign out</button></div>
         <p class="auth-status" id="profile-status" role="status" aria-live="polite"></p>
       </form>
+      <section class="profile-section account-danger-zone" aria-labelledby="delete-account-title">
+        <h2 id="delete-account-title">Delete account</h2>
+        <p>Delete your account and associated profile, messages, counseling requests, notifications, and uploaded journals. This cannot be undone.</p>
+        <button class="button-danger" id="profile-delete-account" type="button">Delete my account</button>
+      </section>
     </section>
     <p class="community-status profile-loading" id="profile-loading" role="status" aria-live="polite">Loading account...</p>
   </main>
