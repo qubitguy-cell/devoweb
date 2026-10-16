@@ -52,8 +52,7 @@ The browser calls `/api/gemini`, so the API key stays server-side. The companion
 2. In **Project Settings > API**, copy the Project URL and publishable key into `assets/supabase-config.js`.
 3. In **Authentication > Providers**, enable Email.
 4. In **Authentication > URL Configuration**, add your Vercel URL to the allowed redirect URLs.
-5. For a new project, open **SQL Editor** and run `supabase-schema.sql` once.
-6. When updating an existing project, run only the new policy statements at the end of `supabase-schema.sql` (the block beginning with `drop policy if exists "Members can update their own community messages"`). Do not paste over or reset existing tables.
+5. Open **SQL Editor** and run `supabase-schema.sql`. The table and policy setup is safe to rerun after partial execution or later schema updates; it does not reset table data.
 
 The schema creates:
 

@@ -17,10 +17,12 @@ create table if not exists public.scholar_profiles (
 
 alter table public.scholar_profiles enable row level security;
 
+drop policy if exists "Anyone can browse opted-in scholars" on public.scholar_profiles;
 create policy "Anyone can browse opted-in scholars"
   on public.scholar_profiles for select to anon, authenticated
   using (true);
 
+drop policy if exists "Scholars can manage their own listing" on public.scholar_profiles;
 create policy "Scholars can manage their own listing"
   on public.scholar_profiles for all to authenticated
   using (auth.uid() = user_id)
@@ -37,10 +39,12 @@ create table if not exists public.counsel_requests (
 
 alter table public.counsel_requests enable row level security;
 
+drop policy if exists "Requesters and scholars can read counseling requests" on public.counsel_requests;
 create policy "Requesters and scholars can read counseling requests"
   on public.counsel_requests for select to authenticated
   using (auth.uid() = requester_id or auth.uid() = scholar_id);
 
+drop policy if exists "Members can send counseling requests" on public.counsel_requests;
 create policy "Members can send counseling requests"
   on public.counsel_requests for insert to authenticated
   with check (auth.uid() = requester_id and requester_id <> scholar_id);
@@ -58,15 +62,18 @@ create table if not exists public.notifications (
 
 alter table public.notifications enable row level security;
 
+drop policy if exists "Members can read their own notifications" on public.notifications;
 create policy "Members can read their own notifications"
   on public.notifications for select to authenticated
   using (auth.uid() = recipient_id);
 
+drop policy if exists "Members can mark their own notifications read" on public.notifications;
 create policy "Members can mark their own notifications read"
   on public.notifications for update to authenticated
   using (auth.uid() = recipient_id)
   with check (auth.uid() = recipient_id);
 
+drop policy if exists "Requesters can notify the selected scholar" on public.notifications;
 create policy "Requesters can notify the selected scholar"
   on public.notifications for insert to authenticated
   with check (
@@ -85,27 +92,33 @@ set public = excluded.public,
     file_size_limit = excluded.file_size_limit,
     allowed_mime_types = excluded.allowed_mime_types;
 
+drop policy if exists "Anyone can read profile avatars" on storage.objects;
 create policy "Anyone can read profile avatars"
   on storage.objects for select to anon, authenticated
   using (bucket_id = 'avatars');
 
+drop policy if exists "Members can upload avatars to their own folder" on storage.objects;
 create policy "Members can upload avatars to their own folder"
   on storage.objects for insert to authenticated
   with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Members can update avatars in their own folder" on storage.objects;
 create policy "Members can update avatars in their own folder"
   on storage.objects for update to authenticated
   using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text)
   with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Members can delete avatars in their own folder" on storage.objects;
 create policy "Members can delete avatars in their own folder"
   on storage.objects for delete to authenticated
   using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
+drop policy if exists "Signed-in members can read community messages" on public.community_messages;
 create policy "Signed-in members can read community messages"
   on public.community_messages for select to authenticated
   using (true);
 
+drop policy if exists "Members can post as themselves" on public.community_messages;
 create policy "Members can post as themselves"
   on public.community_messages for insert to authenticated
   with check (
@@ -127,10 +140,12 @@ create table if not exists public.journals (
 
 alter table public.journals enable row level security;
 
+drop policy if exists "Anyone can browse shared journals" on public.journals;
 create policy "Anyone can browse shared journals"
   on public.journals for select to anon, authenticated
   using (true);
 
+drop policy if exists "Signed-in members can publish their own journals" on public.journals;
 create policy "Signed-in members can publish their own journals"
   on public.journals for insert to authenticated
   with check (auth.uid() = user_id);
@@ -142,10 +157,12 @@ set public = excluded.public,
     file_size_limit = excluded.file_size_limit,
     allowed_mime_types = excluded.allowed_mime_types;
 
+drop policy if exists "Anyone can read shared journal PDFs" on storage.objects;
 create policy "Anyone can read shared journal PDFs"
   on storage.objects for select to anon, authenticated
   using (bucket_id = 'journals');
 
+drop policy if exists "Members can upload PDFs to their own folder" on storage.objects;
 create policy "Members can upload PDFs to their own folder"
   on storage.objects for insert to authenticated
   with check (
