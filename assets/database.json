@@ -76,6 +76,17 @@
       "body": "Courage is not always a loud certainty. Sometimes it is showing up while your hands are still shaking, or asking someone to stay close. Presence can be stronger than fear, even when fear has not yet gone.",
       "thought": "You can be afraid and still take the next step.",
       "tag": "Courage"
+    },
+    {
+      "id": "2026-10-20-the-great-reset-embracing-true-newness",
+      "date": "2026-10-20",
+      "title": "The Great Reset: Embracing True Newness",
+      "verse": "And He who sits on the throne said, 'Behold, I am making all things new.' And He said, 'Write, for these words are faithful and true.",
+      "reference": "Revelation 21:5",
+      "scripture": "Revelation 21:1-end",
+      "body": "The Book of Revelation is often associated with intense cosmic battles, mysterious symbols, and end-times anxiety. But at its core, the final book of the Bible is not meant to confuse or terrify us—it is written to unveil the ultimate victory, hope, and beauty of Jesus Christ.\nIn Revelation 21:5, God gives us a glimpse of the ultimate destination: a total restoration of creation. He doesn't say, \"I am making all new things,\" but rather, \"I am making all things new.\" This means God is not throwing away your story, your brokenness, or this world. Instead, He is hitting the ultimate reset button to redeem, restore, and wipe away every tear.\nWhile we look forward to the day when pain, sickness, and separation will be permanently eradicated, God's renewal isn't just a future event. Through Jesus, the great reset begins today. If you are in Christ, you are already a new creation, and He invites you into daily spiritual resilience. You do not have to carry the weight or the guilt of yesterday's failures; the One who sits on the throne is actively working to bring new life out of your current trials",
+      "thought": "Take a moment to identify one area of your life that feels broken, exhausted, or stuck in old patterns. Write down a simple declaration of faith; \"Because God promises to make all things new, I declare that I will trust Him with my all.....",
+      "tag": "The Great Reset"
     }
   ],
   "prayers": [
@@ -102,34 +113,97 @@
   ],
   "chat_responses": [
     {
-      "keywords": ["anxious", "anxiety", "worried", "panic", "overwhelmed", "stress", "afraid"],
+      "keywords": [
+        "anxious",
+        "anxiety",
+        "worried",
+        "panic",
+        "overwhelmed",
+        "stress",
+        "afraid"
+      ],
       "response_text": "That sounds like a lot to hold at once. You do not have to untangle it all right now. Try one slow breath, and let this moment be smaller than the whole story. If it helps, tell someone you trust what feels heaviest.",
-      "suggested_verses": ["Cast all your anxiety on him because he cares for you.", "1 Peter 5:7"]
+      "suggested_verses": [
+        "Cast all your anxiety on him because he cares for you.",
+        "1 Peter 5:7"
+      ]
     },
     {
-      "keywords": ["lonely", "alone", "isolated", "left out", "miss", "friendless"],
+      "keywords": [
+        "lonely",
+        "alone",
+        "isolated",
+        "left out",
+        "miss",
+        "friendless"
+      ],
       "response_text": "Loneliness can make the room feel very large. I’m glad you put words to it here. You deserve connection and care; reaching out to one safe person, even with a simple hello, can be a gentle start.",
-      "suggested_verses": ["I have loved you with an everlasting love.", "Jeremiah 31:3"]
+      "suggested_verses": [
+        "I have loved you with an everlasting love.",
+        "Jeremiah 31:3"
+      ]
     },
     {
-      "keywords": ["joyful", "joy", "happy", "grateful", "celebrate", "thankful", "hopeful"],
+      "keywords": [
+        "joyful",
+        "joy",
+        "happy",
+        "grateful",
+        "celebrate",
+        "thankful",
+        "hopeful"
+      ],
       "response_text": "It is lovely that joy is here with you. You might pause long enough to notice what this moment feels like, without needing to make it last forever. What is one small thing you want to remember about today?",
-      "suggested_verses": ["His mercies never come to an end; they are new every morning.", "Lamentations 3:22–23"]
+      "suggested_verses": [
+        "His mercies never come to an end; they are new every morning.",
+        "Lamentations 3:22–23"
+      ]
     },
     {
-      "keywords": ["grief", "grieving", "loss", "died", "death", "mourning", "heartbroken", "miss them"],
+      "keywords": [
+        "grief",
+        "grieving",
+        "loss",
+        "died",
+        "death",
+        "mourning",
+        "heartbroken",
+        "miss them"
+      ],
       "response_text": "I’m sorry this hurts. Grief doesn’t follow a schedule, and you don’t need to find a bright side to make this moment acceptable. If you can, let someone kind be near you today. You are allowed to take this slowly.",
-      "suggested_verses": ["The Lord is close to the brokenhearted.", "Psalm 34:18"]
+      "suggested_verses": [
+        "The Lord is close to the brokenhearted.",
+        "Psalm 34:18"
+      ]
     },
     {
-      "keywords": ["tired", "exhausted", "burned out", "burnout", "weary", "rest"],
+      "keywords": [
+        "tired",
+        "exhausted",
+        "burned out",
+        "burnout",
+        "weary",
+        "rest"
+      ],
       "response_text": "It makes sense to feel worn down when you’ve been carrying a lot. Rest is not something you have to earn by finishing everything. Could one small demand wait while you take a real pause?",
-      "suggested_verses": ["Come to me, all you who are weary and burdened, and I will give you rest.", "Matthew 11:28"]
+      "suggested_verses": [
+        "Come to me, all you who are weary and burdened, and I will give you rest.",
+        "Matthew 11:28"
+      ]
     },
     {
-      "keywords": ["angry", "anger", "frustrated", "resentful", "mad"],
+      "keywords": [
+        "angry",
+        "anger",
+        "frustrated",
+        "resentful",
+        "mad"
+      ],
       "response_text": "There may be something important underneath that anger. You don’t have to act on it immediately or shame yourself for feeling it. A little space can help you hear what you need and choose what to do next.",
-      "suggested_verses": ["Be quick to listen, slow to speak and slow to become angry.", "James 1:19"]
+      "suggested_verses": [
+        "Be quick to listen, slow to speak and slow to become angry.",
+        "James 1:19"
+      ]
     }
   ]
 }
